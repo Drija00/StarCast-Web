@@ -1,5 +1,5 @@
 
-<body class="container">
+<body>
 
     <section>
         <span></span>
@@ -31,9 +31,10 @@
             </mat-form-field>
             <p style="color: white;">
                 Don't have an account?  
-                <a href="/signup" class="register-link">Register</a>
+                <a (click)="redirectToSignup()" class="register-link">Register</a>
             </p>
     
         <button mat-button (click) = "redirectToHome()" class="login-button">Log in</button>
     </div>
+
 </body>

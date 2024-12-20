@@ -1,0 +1,100 @@
+
+body {
+    height: 100%    ;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url("https://i.postimg.cc/c1Q3njM0/bg2.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+#feed{
+    height: 92%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#scroll{
+    display: flex;
+    
+    height: 100%;
+    flex-direction: column;
+    position: relative;
+    overflow-y: scroll;
+    align-items: center;
+    z-index: 10;
+}
+
+#nav {
+    background: rgba(0, 0, 0, 0.6);
+    height: 80px;
+    z-index: 16;
+    border-bottom: 1px solid rgb(28, 29, 32);
+}
+
+
+.example-spacer {
+    flex: 1 1 auto; 
+  }
+
+label{
+    color: #ffffff;
+    font-size: 1em;
+    justify-content: center;
+    display: flex;
+    margin: 10px 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .5s ease-in-out;
+    margin-bottom: 25px;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+section {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    
+}
+
+#pozadina{
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background: rgba(0, 0, 0, 0.4);
+    position: absolute;
+}
+
+.example-card {
+    margin-left: 2px;
+    margin-right: 2px;
+    max-width: 80%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    min-width: auto;
+    min-height:auto;
+  }
+  
+  .example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+  }
+  
+
+
+  

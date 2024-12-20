@@ -1,5 +1,5 @@
 
-.container {
+body {
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -10,11 +10,29 @@
     position: absolute;
     top: 15%;
     left: 50%;
-    font-size: 500%;
+    font-size: 5rem;
     transform: translate(-50%, -50%);
     z-index: 10;
     color: white;
-    letter-spacing: 30px;
+    letter-spacing: 2vw;
+}
+
+@media (max-width: 1080px) {
+    #naslov {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #naslov {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #naslov {
+        font-size: 2rem;
+    }
 }
 
 .login-form {
@@ -26,7 +44,7 @@
     z-index: 10;
     padding: 20px;
     border-radius: 25px;
-    border-color: rgb(55, 0, 182);
+    border-color: white;
     border-width: 1px;
     border-style: solid;
     display: flex;
@@ -48,18 +66,20 @@
     padding: 10px;
     margin-top: 20px;
     width: 100%;
-    background-color: rgb(70, 0, 182);
-    color: white;
+    background-color: rgba(37, 37, 37, 0.8);
+    border-radius: 25px;
+    border-color: white;
+    border-width: 1px;
 }
 
 h1.login {
-    color: rgb(129, 50, 255);
+    color: white;
     font-size: 1.5rem;
     margin-bottom: 20px;
 }   
 
 .register-link{
-    color: blue;
+    color: rgb(0, 81, 255);
     text-decoration: underline;
     cursor: pointer;
 }
