@@ -1,0 +1,49 @@
+<body class="container">
+
+    <section>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </section>
+
+    <div class="login-form">
+        <h1 class = "login">
+            <label>Sign up</label>
+        </h1>
+            <mat-form-field class="login-input" appearance="outline">
+            <mat-label>Username</mat-label>
+            <input type="email" matInput [(ngModel)]="username" placeholder="Ex. pat">
+            </mat-form-field>
+
+            <mat-form-field class="login-input" appearance="outline">
+            <mat-label>Email</mat-label>
+            <input type="email" matInput [(ngModel)]="email" placeholder="Ex. pat@example.com">
+            </mat-form-field>
+    
+            <mat-form-field class="login-input" appearance="outline">
+                <input matInput [(ngModel)]="password" placeholder="Password" [type]="hide ? 'password' : 'text'" required>
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-hint *ngIf="passwordInput?.value">Enter your password</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field class="login-input" appearance="outline">
+                <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" required>
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-hint *ngIf="passwordInput?.value">Re-enter your password</mat-hint>
+            </mat-form-field>
+
+            <p style="color: white;">
+                Back to 
+                <a href="/login" class="register-link">login</a>
+            </p>
+    
+        <button mat-button (click) = "redirectToLogin()" class="login-button">Register</button>
+    </div>
+</body>
+

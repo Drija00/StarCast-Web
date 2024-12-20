@@ -1,0 +1,39 @@
+
+<body class="container">
+
+    <section>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </section>
+
+    <h1 id="naslov">STAR CAST</h1>
+
+    <div class="login-form">
+        <h1 class = "login">
+            <label>Login</label>
+        </h1>
+            <mat-form-field class="login-input" appearance="outline">
+            <mat-label>Email</mat-label>
+            <input type="email" matInput [(ngModel)]="email" placeholder="Ex. pat@example.com">
+            </mat-form-field>
+    
+            <mat-form-field class="login-input" appearance="outline">
+                <input matInput [(ngModel)]="password" placeholder="Password" [type]="hide ? 'password' : 'text'" required>
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-hint *ngIf="passwordInput?.value">Enter your password</mat-hint>
+            </mat-form-field>
+            <p style="color: white;">
+                Don't have an account?  
+                <a href="/signup" class="register-link">Register</a>
+            </p>
+    
+        <button mat-button (click) = "redirectToHome()" class="login-button">Log in</button>
+    </div>
+</body>
