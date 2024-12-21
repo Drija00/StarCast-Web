@@ -9,6 +9,7 @@ body {
     background-size: cover;
     background-position: center;
 }
+  
 
 #feed{
     height: 92%;
@@ -19,13 +20,59 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
+.postinput{
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-radius: 25px;
+    background-color: #161215;
+    border-color: #4e444b;
+    border-width: 1px;
+}
+
+
+#logoinput{
+    display: flex;
+    flex-direction: row;
+}
+
+#postbutton{
+    width: 20%;
+
+}
+
+.example-form {
+    margin-left: 15px;
+    width: 100%;
+    color: white;
+
+  }
+  
+  .example-full-width {
+    width: 100%;
+  }
+
+  
+  .mat-mdc-text-field-wrapper {
+    border-radius: 15px;
+    border-color: #4e444b;
+    border-width: 1px;
+}
+  
+
 #scroll{
     display: flex;
-    
+    width: 100%;
     height: 100%;
     flex-direction: column;
     position: relative;
     overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1);
     align-items: center;
     z-index: 10;
 }
@@ -88,6 +135,36 @@ section {
     margin-bottom: 10px;
     min-width: auto;
     min-height:auto;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .mat-mdc-card-header{
+    display: flex;
+    padding: 16px 16px 0;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    margin-bottom: 10px;
+  }
+
+  .mat-mdc-card-avatar{
+    margin-bottom: 0px;
+  }
+
+  .carddiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .title{
+    padding-left: 10px;
+  }
+
+  img{
+    margin: 0px 15px 15px 15px;
   }
   
   .example-header-image {

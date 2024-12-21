@@ -19,7 +19,7 @@ import {users} from '../users';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  constructor(private router: Router){}
+  constructor(private router: Router){console.log(window.innerWidth)}
 
   users = [...users];
   email:any;
