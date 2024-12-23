@@ -1,5 +1,5 @@
+
 <body>
-    
 
     <mat-toolbar id="nav">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" color="white" fill="none">
@@ -13,9 +13,13 @@
     </mat-toolbar>
 
     <div id="pozadina"></div>
+
+    <button mat-icon-button class="go-to-top" *ngIf="showTopButton" (click)="scrollToTop()">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
       
     <div id="feed">
-        <div id="scroll">
+        <div id="scroll" #scroll>
             
             <div class="postinput">
                 <div id="logoinput">
@@ -23,8 +27,8 @@
                     <form class="example-form">
                         <mat-form-field class="example-full-width">
                         <mat-label>Release a star :)</mat-label>
-                        <input matInput #message maxlength="256">
-                        <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+                        <textarea matInput #message maxlength="512  " rows="1" (input)="onInput(message)" style="overflow: hidden;"></textarea>
+                        <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
                         </mat-form-field>
                     </form>
                 </div>
@@ -40,7 +44,7 @@
                     <div mat-card-avatar class="example-header-image"></div>
                     <mat-card-title class="title">Shiba Inu</mat-card-title>
                 </div>
-                <mat-card-subtitle>20.12.2024-18:24</mat-card-subtitle>
+                <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">20.12.2024-18:24</mat-card-subtitle>
                 </mat-card-header>
                 <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
                 <mat-card-content>
@@ -61,7 +65,7 @@
                     <div mat-card-avatar class="example-header-image"></div>
                     <mat-card-title class="title">Shiba Inu</mat-card-title>
                 </div>
-                <mat-card-subtitle>20.12.2024-18:24</mat-card-subtitle>
+                <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">20.12.2024-18:24</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
                 <p>
@@ -81,7 +85,7 @@
                     <div mat-card-avatar class="example-header-image"></div>
                     <mat-card-title class="title">Shiba Inu</mat-card-title>
                 </div>
-                <mat-card-subtitle>20.12.2024-18:24</mat-card-subtitle>
+                <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">20.12.2024-18:24</mat-card-subtitle>
                 </mat-card-header>
                 <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
                 <mat-card-content>
@@ -102,7 +106,7 @@
                     <div mat-card-avatar class="example-header-image"></div>
                     <mat-card-title class="title">Shiba Inu</mat-card-title>
                 </div>
-                <mat-card-subtitle>20.12.2024-18:24</mat-card-subtitle>
+                <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">20.12.2024-18:24</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
                 <p>
@@ -112,7 +116,7 @@
                 </p>
                 </mat-card-content>
                 <mat-card-actions>
-                <button mat-button>LIKE</button>
+                <button mat-button (click)="scrollToTop()">LIKE</button>
                 <button mat-button>SHARE</button>
                 </mat-card-actions>
             </mat-card>

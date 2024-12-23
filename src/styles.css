@@ -2,3 +2,9 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.mdc-text-field.mdc-text-field--filled {
+    border-radius: 15px !important;
+    border-style: solid;
+    border-width: 0.5px;
+    border-color: grey;
+  }  
