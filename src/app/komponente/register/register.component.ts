@@ -48,10 +48,12 @@ export class RegisterComponent {
       }
     }
     users.push({
-      id: idCounter,
+      userId: "",
       username: this.username,
       email: this.email,
-      password: this.password
+      password: this.password,
+      active: true,
+      profile_img: ""
     })
     return true;
   }

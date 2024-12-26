@@ -140,10 +140,10 @@ section {
 .example-card {
     margin-left: 2px;
     margin-right: 2px;
+    min-width: 80%;
     max-width: 80%;
     margin-top: 20px;
     margin-bottom: 10px;
-    min-width: auto;
     min-height:auto;
     color: white;
     display: flex;
@@ -176,11 +176,7 @@ section {
   img{
     margin: 0px 15px 15px 15px;
   }
-  
-  .example-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
-    background-size: cover;
-  }
+
   
   
 

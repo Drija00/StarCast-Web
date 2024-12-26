@@ -8,7 +8,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {users} from '../users';
+import {User, users} from '../users';
 
 
 @Component({
@@ -34,18 +34,21 @@ export class LoginComponent {
   get emailInput() { return this.emailFormControl.get('email'); }
   get passwordInput() { return this.signin.get('password'); }  
 
-  checkCredentials(): boolean {
+  checkCredentials(): User | undefined {
     for (const u of users) {
       if (u.email === this.email && u.password === this.password) {
-        return true;
+        return u;
       }
     }
-    return false;
+    return undefined;
   }
 
   redirectToHome() {
-    if(this.checkCredentials()){
-    this.router.navigate(['/home']);
+    let user = this.checkCredentials();
+    if(user){
+      console.log(user)
+    localStorage.setItem('logged_user',JSON.stringify(user))
+    this.router.navigate(['/home',user.userId]);
     }else{
       window.alert("Invalid credentials!");
     }

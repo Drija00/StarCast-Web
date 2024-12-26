@@ -1,0 +1,69 @@
+import { User } from "./users"
+
+export interface Star {
+        starId: string,
+        content_img: string,
+        content: string,
+        user: User,
+        timestamp: string
+}
+
+export const stars:Star[] = [
+    {
+        starId: "asd89ds0-0s90--9das-b1e4-234901aa51f2",
+        content_img: "https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png",
+        content: "Trump won!!!",
+        user: {
+            userId: "1ed32ee2-59d4-44e1-b1e4-234901aa51f2",
+            username: "ivanri",
+            email: "ivanri@telekom.rs",
+            password: "ivanri",
+            active: true,
+            profile_img: "https://cdn.pixabay.com/photo/2013/07/13/10/07/man-156584_1280.png"
+        },
+        timestamp: "2024-12-14 14:15:22"
+    },
+    {
+        starId: "gvasf982-sf87v-fsd74-b1e4-234901aa51f2",
+        content_img: "",
+        content: "Im a boss!!!",
+        user: {
+            userId: "1ed32ee2-59d4-44e1-b1e4-234901aa51f2",
+            username: "ivanri",
+            email: "ivanri@telekom.rs",
+            password: "ivanri",
+            active: true,
+            profile_img: "https://cdn.pixabay.com/photo/2013/07/13/10/07/man-156584_1280.png"
+        },
+        timestamp: "2024-12-24 14:15:22"
+    },
+    {
+        starId: "d5887das-sd85-sa84-b1e4-234901aa51f2",
+        content_img: "",
+        content: "Tacka le o leee!!!",
+        user: {
+            userId: "cdd963a4-8edb-471c-8b42-8de16ca64241",
+            username: "tamarat",
+            email: "tamarat@telekom.rs",
+            password: "tamarat",
+            active: true,
+            profile_img: "https://cdn.pixabay.com/photo/2014/03/24/17/19/teacher-295387_1280.png"
+        },
+        timestamp: "2024-12-25 14:15:22"
+    },
+    {
+        starId: "4das98d-d58d-a85a-b1e4-234901aa51f2",
+        content_img: "https://cdn.pixabay.com/photo/2018/03/22/09/14/football-3249778_960_720.png",
+        content: "Danas je fantazi liga!!",
+        user: {
+            userId: "cdd963a4-8edb-471c-8b42-8de16ca64241",
+            username: "tamarat",
+            email: "tamarat@telekom.rs",
+            password: "tamarat",
+            active: true,
+            profile_img: "https://cdn.pixabay.com/photo/2014/03/24/17/19/teacher-295387_1280.png"
+        },
+        timestamp: "2024-12-26 12:15:22"
+    }
+
+]

@@ -18,6 +18,8 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { stars } from '../posts';
+import { User } from '../users';
 
 @Component({
   selector: 'app-home',
@@ -32,31 +34,37 @@ import { MatCardModule } from '@angular/material/card';
     FormsModule,
     CommonModule,
     MatFormFieldModule,
-    MatInputModule,
+    MatInputModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   @ViewChild('scroll', { static: true }) scrollDiv!: ElementRef;
-
+  stars: any[] = [];  
   showTopButton = false;
+  loggedUser: User | undefined;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   redirectToLogin() {
     this.router.navigate(['/login']);
   }
 
   ngOnInit(): void {
+    const userJson = localStorage.getItem('logged_user');
+    this.stars = [...stars];
+    if (userJson) {
+      this.loggedUser = JSON.parse(userJson);
+      console.log(this.loggedUser);
+    }
     console.log(this.scrollDiv)
-      console.log(this.scrollDiv)
-      if (this.scrollDiv) {
-        console.log("scroll")
-        this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
-      } else {
-        console.error('Element #scroll nije pronađen!');
-      };
+    if (this.scrollDiv) {
+      console.log("scroll")
+      this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
+    } else {
+      console.error('Element #scroll nije pronađen!');
+    };
   }
 
   onInput(textarea: HTMLTextAreaElement) {
@@ -74,5 +82,21 @@ export class HomeComponent implements OnInit {
 
   scrollToTop() {
     this.scrollDiv.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  postStar(textarea: HTMLTextAreaElement){
+    const newStar = {
+      starId: "",
+      content_img: "",
+      content: textarea.value,
+      user: this.loggedUser!,
+      timestamp: new Date().toISOString(),
+    };
+    
+    this.stars.unshift(newStar);
+    textarea.value = "";  
+    this.cdr.detectChanges();
+    console.log(this.stars)
+
   }
 }
