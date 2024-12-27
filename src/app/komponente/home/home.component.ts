@@ -13,13 +13,15 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { stars } from '../posts';
 import { User } from '../users';
+import { DataService } from '../../servisi/data.service';
+import { Star, stars } from '../posts';
 
 @Component({
   selector: 'app-home',
@@ -39,43 +41,98 @@ import { User } from '../users';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
+  @ViewChild('scrollMarker', { static: false }) scrollMarker!: ElementRef;
   @ViewChild('scroll', { static: true }) scrollDiv!: ElementRef;
-  stars: any[] = [];  
+  stars:Star[] = [];
+  loading = false;
+  offset = 0;
+  limit = 6;
   showTopButton = false;
   loggedUser: User | undefined;
+  private observer!: IntersectionObserver;
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+
+  constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService) {}
 
   redirectToLogin() {
     this.router.navigate(['/login']);
   }
 
+  backToHome(){
+    console.log("HOME")
+    this.router.navigate(['/home',this.loggedUser?.userId]);
+  }
+
   ngOnInit(): void {
     const userJson = localStorage.getItem('logged_user');
-    this.stars = [...stars];
+    this.loadStars();
     if (userJson) {
       this.loggedUser = JSON.parse(userJson);
       console.log(this.loggedUser);
     }
     console.log(this.scrollDiv)
     if (this.scrollDiv) {
-      console.log("scroll")
       this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
     } else {
       console.error('Element #scroll nije pronađen!');
     };
   }
+    ngAfterViewInit(): void {
+      if (!this.scrollMarker) {
+        console.error('Scroll marker element nije pronađen!');
+        return;
+      }
+    
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting && !this.loading) {
+              this.loadStars();
+            }
+          }
+        },
+        { root: this.scrollDiv.nativeElement, threshold: 1 }
+      );
+    
+      this.observer.observe(this.scrollMarker.nativeElement);
+    }
+  
+  loadStars(): void {
+    if (this.loading) {
+      console.warn('Učitavanje je već u toku. Preskačem poziv loadStars.');
+      return;
+    }
+  
+    this.loading = true;
+  
+    this.dataService.getStars(this.offset, this.limit).subscribe({
+      next: (data) => {
+        if (data.length > 0) {
+          this.stars = [...this.stars, ...data];
+          this.offset += data.length;
+        } else {
+          console.log('Diskonektujem posmatrača.');
+          this.observer?.disconnect();
+        }
+      },
+      error: (err) => console.error('Greška prilikom učitavanja zvezdica:', err),
+      complete: () => {
+        this.loading = false;
+        console.log('Učitavanje završeno.');
+      },
+    });
+  }  
+  
+  
 
   onInput(textarea: HTMLTextAreaElement) {
-    // Resetuje visinu pre nego što se ponovo postavi
     textarea.style.height = 'auto';
-    textarea.style.height = `${textarea.scrollHeight}px`; // Postavlja visinu na visinu sadržaja
+    textarea.style.height = `${textarea.scrollHeight}px`;
   }
   
 
   onScroll() {
-    console.log("mjau")
     const scrollTop = this.scrollDiv.nativeElement.scrollTop;
     this.showTopButton = scrollTop > 50;
   }

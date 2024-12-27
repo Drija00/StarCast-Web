@@ -174,8 +174,19 @@ section {
   }
 
   img{
-    margin: 0px 15px 15px 15px;
+    margin: 5px 25px 15px 25px;
   }
+
+  #logo{
+    cursor: pointer;
+  }
+
+  #scrollMarker {
+    margin-bottom: 10px;
+    background-color: red;
+  }
+  
+  
 
   
   

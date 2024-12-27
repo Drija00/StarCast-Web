@@ -64,6 +64,20 @@ export const stars:Star[] = [
             profile_img: "https://cdn.pixabay.com/photo/2014/03/24/17/19/teacher-295387_1280.png"
         },
         timestamp: "2024-12-26 12:15:22"
+    },
+    {
+        starId: "dasda42-gsd35-a85a-b1e4-234901aa51f2",
+        content_img: "",
+        content: "Al je laaadno!",
+        user: {
+            userId: "06e49738-f9e0-4741-8926-d20d756400f7",
+            username: "andrijama",
+            email: "andrijama@telekom.rs",
+            password: "andrijama",
+            active: true,
+            profile_img: "https://cdn.pixabay.com/photo/2014/04/03/10/32/businessman-310819_1280.png"
+        },
+        timestamp: "2024-12-26 12:15:22"
     }
 
 ]
