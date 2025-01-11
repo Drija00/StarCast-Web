@@ -1,0 +1,233 @@
+
+body {
+    height: 100%    ;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url("https://i.postimg.cc/c1Q3njM0/bg2.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.go-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  color: rgba(0, 0, 0);
+  border: none;
+  border-radius: 25px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.go-to-top:hover {
+  opacity: 1;
+}
+
+#feed{
+    height: 92%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.postinput{
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-radius: 25px;
+    background-color: #161215;
+    border-color: #4e444b;
+    border-width: 1px;
+}
+
+
+#logoinput{
+    display: flex;
+    flex-direction: row;
+}
+
+#postbutton{
+    width: 20%;
+
+}
+
+.example-form {
+    margin-left: 15px;
+    width: 100%;
+    color: white;
+
+  }
+  
+  .example-full-width {
+    min-width: 100%;
+  }
+
+  
+
+#scroll{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    position: relative;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1);
+    align-items: center;
+    z-index: 10;
+}
+
+#nav {
+    background: rgba(0, 0, 0, 0.6);
+    height: 80px;
+    z-index: 16;
+    border-bottom: 1px solid rgb(28, 29, 32);
+}
+
+
+.example-spacer {
+    flex: 1 1 auto; 
+  }
+
+
+label{
+    color: #ffffff;
+    font-size: 1em;
+    justify-content: center;
+    display: flex;
+    margin: 10px 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .5s ease-in-out;
+    margin-bottom: 25px;
+}
+
+#divPreview{
+  display: flex;
+  flex-direction: row;
+  
+  min-width: 100%;
+  max-width: 80%;
+}
+
+.custom-file-upload{
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  font-size: 0.8em;
+}
+
+.custom-file-upload:hover{
+  color: rgb(74, 95, 209);
+}
+
+#uploadicon{
+  margin-right: 10px;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+section {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    
+}
+
+#pozadina{
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background: rgba(0, 0, 0, 0.4);
+    position: absolute;
+}
+
+.example-card {
+    margin-left: 2px;
+    margin-right: 2px;
+    min-width: 80%;
+    max-width: 80%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    min-height:auto;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .mat-mdc-card-header{
+    display: flex;
+    padding: 16px 16px 0;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    margin-bottom: 10px;
+  }
+  
+
+  .mat-mdc-card-avatar{
+    margin-bottom: 0px;
+  }
+
+  .previewImage{
+    max-width: 80%; 
+    height: auto; 
+    margin-top: 10px;
+  }
+
+  .postButton{
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    margin-top: 10px;
+  }
+
+  .carddiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .title{
+    padding-left: 10px;
+  }
+
+  img{
+    margin: 5px 25px 15px 25px;
+  }
+
+  #logo{
+    cursor: pointer;
+  }
+
+  #scrollMarker {
+    margin-bottom: 10px;
+    background-color: red;
+  }
+  
+  
+
+  
+  
+
+
+  

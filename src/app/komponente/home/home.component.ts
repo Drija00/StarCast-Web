@@ -51,6 +51,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   showTopButton = false;
   loggedUser: User | undefined;
   private observer!: IntersectionObserver;
+  previewImage: string | null = null;
+  imageString: string | null = null;
 
 
   constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService) {}
@@ -62,6 +64,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   backToHome(){
     console.log("HOME")
     this.router.navigate(['/home',this.loggedUser?.userId]);
+  }
+
+  redirectToUser(){
+    console.log("user")
+    this.router.navigate(['/user',this.loggedUser?.userId]);
   }
 
   ngOnInit(): void {
@@ -111,6 +118,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (data.length > 0) {
           this.stars = [...this.stars, ...data];
           this.offset += data.length;
+          console.log(this.stars)
         } else {
           console.log('Diskonektujem posmatrača.');
           this.observer?.disconnect();
@@ -141,15 +149,47 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.scrollDiv.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput?.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+  
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Invalid file type. Please select a JPEG or PNG image.');
+        return;
+      }
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImage = reader.result as string;
+        this.imageString = reader.result as string; 
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  
+  clearImage(): void {
+    this.previewImage = null;
+    this.imageString = null;
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
   postStar(textarea: HTMLTextAreaElement){
+    
     const newStar = {
       starId: "",
-      content_img: "",
+      content_img: this.imageString || '',
       content: textarea.value,
       user: this.loggedUser!,
       timestamp: new Date().toISOString(),
     };
-    
+    console.log('Posting star:', newStar);
+    this.previewImage = null;
+    this.imageString = null;
     this.stars.unshift(newStar);
     textarea.value = "";  
     this.cdr.detectChanges();

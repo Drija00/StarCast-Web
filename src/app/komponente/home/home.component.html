@@ -1,9 +1,11 @@
 <body>
     <mat-toolbar id="nav">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" color="white" fill="none" style="cursor: pointer;" (click)="backToHome()">
-            <path d="M9.03658 10.8665L10.0925 12.9957C10.2364 13.2921 10.6204 13.5764 10.9444 13.6309L12.8582 13.9515C14.082 14.1571 14.37 15.0524 13.4881 15.9355L12.0003 17.4356C11.7483 17.6897 11.6103 18.1796 11.6883 18.5305L12.1142 20.3875C12.4502 21.8574 11.6763 22.426 10.3864 21.6578L8.59263 20.5871C8.26867 20.3935 7.73473 20.3935 7.40476 20.5871L5.61096 21.6578C4.3271 22.426 3.54719 21.8513 3.88315 20.3875L4.3091 18.5305C4.3871 18.1796 4.24911 17.6897 3.99714 17.4356L2.5093 15.9355C1.6334 15.0524 1.91537 14.1571 3.13923 13.9515L5.05302 13.6309C5.37099 13.5764 5.75494 13.2921 5.89893 12.9957L6.95481 10.8665C7.53075 9.71116 8.46665 9.71116 9.03658 10.8665Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M22 2L14 10M16 2L11 7M20 10L17 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
+        <a style="text-decoration: none; cursor: pointer;" (click)="backToHome()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" color="white" fill="none" style="cursor: pointer;">
+                <path d="M9.03658 10.8665L10.0925 12.9957C10.2364 13.2921 10.6204 13.5764 10.9444 13.6309L12.8582 13.9515C14.082 14.1571 14.37 15.0524 13.4881 15.9355L12.0003 17.4356C11.7483 17.6897 11.6103 18.1796 11.6883 18.5305L12.1142 20.3875C12.4502 21.8574 11.6763 22.426 10.3864 21.6578L8.59263 20.5871C8.26867 20.3935 7.73473 20.3935 7.40476 20.5871L5.61096 21.6578C4.3271 22.426 3.54719 21.8513 3.88315 20.3875L4.3091 18.5305C4.3871 18.1796 4.24911 17.6897 3.99714 17.4356L2.5093 15.9355C1.6334 15.0524 1.91537 14.1571 3.13923 13.9515L5.05302 13.6309C5.37099 13.5764 5.75494 13.2921 5.89893 12.9957L6.95481 10.8665C7.53075 9.71116 8.46665 9.71116 9.03658 10.8665Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M22 2L14 10M16 2L11 7M20 10L17 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+        </a>
         <span class="example-spacer"></span>
         <button mat-icon-button class="example-icon favorite-icon" matTooltip="Logout" aria-label="Example icon-button with heart icon" (click)="redirectToLogin()">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
@@ -23,7 +25,8 @@
                     <div 
                         mat-card-avatar 
                         [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
-                        style="background-size: cover; background-position: center;">
+                        style="background-size: cover; background-position: center;"
+                        (click)="redirectToUser()">
                     </div>
                     <form class="example-form">
                         <mat-form-field class="example-full-width">
@@ -31,11 +34,19 @@
                         <textarea matInput #message maxlength="512" rows="1" (input)="onInput(message)" style="overflow: hidden;"></textarea>
                         <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
                         </mat-form-field>
+                        <div id="divPreview">
+                        <img *ngIf="previewImage" [src]="previewImage" alt="Image preview" class="previewImage" />
+                        
+                        <button *ngIf="previewImage" mat-icon-button color="warn" (click)="clearImage()" aria-label="Clear image"> <mat-icon>close</mat-icon> </button>
+                        </div>
                     </form>
                 </div>
-                <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 10px;">
-                    <span></span>
-                    <button mat-stroked-button id="postbutton" (click)="postStar(message)">Release</button>  
+                <div class="postButton">
+                    <label class="custom-file-upload">
+                        <mat-icon id="uploadicon">cloud_upload</mat-icon>   Upload image
+                        <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="display: none;">
+                    </label>
+                    <button mat-stroked-button id="postbutton" [disabled]="!message.value || message.value.trim().length === 0" (click)="postStar(message)">Release</button>  
                 </div> 
             </div>
               

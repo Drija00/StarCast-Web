@@ -360,4 +360,8 @@ export class DataService {
   getStars(offset: number, limit: number): Observable<any[]> {
     return of(this.data.slice(offset, offset + limit));
   }
+
+  getUserStars(id: string,offset: number, limit: number): Observable<any[]> {
+    return of(this.data.filter(x=>x.user.userId===id).slice(offset, offset + limit));
+  }
 }
