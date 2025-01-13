@@ -18,8 +18,38 @@
         <mat-icon>arrow_upward</mat-icon>
     </button>
 
+    
+
     <div id="feed">
         <div id="scroll" #scroll (scroll)="onScroll()">
+            <div class="postinput" *ngIf="post">
+                <div id="logoinput">
+                    <div 
+                        mat-card-avatar 
+                        [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
+                        class="postUserProfile">
+                    </div>
+                    <form class="example-form">
+                        <mat-form-field class="example-full-width">
+                        <mat-label>Release a star :)</mat-label>
+                        <textarea matInput #message maxlength="512" rows="1" (input)="onInput(message)" style="overflow: hidden;"></textarea>
+                        <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
+                        </mat-form-field>
+                        <div id="divPreview">
+                        <img *ngIf="previewImage" [src]="previewImage" alt="Image preview" class="previewImage" />
+                        
+                        <button *ngIf="previewImage" mat-icon-button color="warn" (click)="clearImage()" aria-label="Clear image"> <mat-icon>close</mat-icon> </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="postButton">
+                    <label class="custom-file-upload">
+                        <mat-icon id="uploadicon">cloud_upload</mat-icon>   Upload image
+                        <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="display: none;">
+                    </label>
+                    <button mat-stroked-button id="postbutton" [disabled]="!message.value || message.value.trim().length === 0" (click)="postStar(message)">Release</button>  
+                </div> 
+            </div>
               
             <mat-card class="example-card" appearance="outlined" *ngFor="let star of stars">
                 <mat-card-header>
@@ -29,18 +59,30 @@
                         [style.background-image]="'url(' + star.user.profile_img + ')'" 
                         style="background-size: cover; background-position: center; cursor: pointer;">
                     </div>
-                    <mat-card-title class="title" style="cursor: pointer;">{{star.user.username}}</mat-card-title>
+                    <mat-card-title class="title" style="cursor: pointer;" (click)="backToHome()">{{star.user.username}}</mat-card-title>
                 </div>
                 <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
                 </mat-card-header>
-                <mat-card-content style="margin-left: 5px;">
+                <mat-card-content style="margin-left: 8%; margin-right: 8%;">
                     <p>
                         {{star.content}}
                     </p>
                 </mat-card-content>
-                <ng-container *ngIf="star?.content_img">
-                    <img mat-card-image [src]="star.content_img" />
-                </ng-container>
+                <ng-container *ngIf="star?.content_imgs">
+                    <mat-grid-list cols="2" rowHeight="2:1">
+                        <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
+                          <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="star.content_imgs.length > 2">
+                          <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
+                            <span>+{{ star.content_imgs.length - 1 }} more</span>
+                          </div>
+                        </mat-grid-tile>
+                      </mat-grid-list>
+                      
+                  </ng-container>
+                  
+                  
                 <mat-card-actions>
                 <button mat-button>LIKE</button>
                 <button mat-button>SHARE</button>
@@ -52,5 +94,13 @@
             Loading...
         </div>
     </div>
+    <div class="image-modal" *ngIf="expandedImages.length > 0" (click)="closeImage()">
+        <div class="image-container" (click)="$event.stopPropagation()">
+          <button class="prev" *ngIf="currentImageIndex > 0" (click)="prevImage($event)">&#10094;</button>
+          <img [src]="expandedImages[currentImageIndex]" alt="Expanded image" />
+          <button class="next" *ngIf="currentImageIndex < expandedImages.length - 1" (click)="nextImage($event)">&#10095;</button>
+        </div>
+    </div>
+      
 </body>
 

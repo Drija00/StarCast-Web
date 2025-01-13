@@ -8,7 +8,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {users} from '../users';
+import {users} from '../../users';
 
 
 
@@ -53,7 +53,8 @@ export class RegisterComponent {
       email: this.email,
       password: this.password,
       active: true,
-      profile_img: ""
+      profile_img: "",
+      background_img: ""
     })
     return true;
   }

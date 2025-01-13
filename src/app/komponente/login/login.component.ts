@@ -8,7 +8,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {User, users} from '../users';
+import {User, users} from '../../users';
 
 
 @Component({

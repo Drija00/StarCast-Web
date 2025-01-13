@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {MatGridListModule} from '@angular/material/grid-list';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -19,9 +20,9 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { User } from '../users';
+import { User } from '../../users';
 import { DataService } from '../../servisi/data.service';
-import { Star, stars } from '../posts';
+import { Star, stars } from '../../posts';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +37,8 @@ import { Star, stars } from '../posts';
     FormsModule,
     CommonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatGridListModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -54,8 +56,39 @@ export class HomeComponent implements OnInit, AfterViewInit {
   previewImage: string | null = null;
   imageString: string | null = null;
 
+  expandedImages: string[] = [];
+  currentImageIndex: number = 0;
+  currentImageSet: string[] = [];
+  previewImages: string[] = [];
+  imageStrings: string[] = [];
+
 
   constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService) {}
+  expandImages(images: string[], index: number): void {
+    this.expandedImages = images;
+    this.currentImageIndex = index;
+    const imageId = index;
+    this.router.navigate(['/image-detail', imageId]);
+  }
+
+  closeImage(): void {
+    this.expandedImages = [];
+    this.currentImageIndex = 0;
+  }
+
+  prevImage(event: Event): void {
+    event.stopPropagation(); 
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+    }
+  }
+
+  nextImage(event: Event): void {
+    event.stopPropagation();
+    if (this.currentImageIndex < this.expandedImages.length - 1) {
+      this.currentImageIndex++;
+    }
+  }
 
   redirectToLogin() {
     this.router.navigate(['/login']);
@@ -66,9 +99,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/home',this.loggedUser?.userId]);
   }
 
-  redirectToUser(){
+  redirectToUser(starId:string){
     console.log("user")
-    this.router.navigate(['/user',this.loggedUser?.userId]);
+    this.router.navigate(['/user',starId]);
   }
 
   ngOnInit(): void {
@@ -152,26 +185,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput?.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-  
+      const files = Array.from(fileInput.files);  // Convert FileList to an array
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Invalid file type. Please select a JPEG or PNG image.');
+      const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Invalid file type(s). Please select only JPEG or PNG images.');
         return;
       }
   
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewImage = reader.result as string;
-        this.imageString = reader.result as string; 
-      };
-      reader.readAsDataURL(file);
+      // Reset previews
+      this.previewImages = [];  // If you want to show previews for multiple images
+      this.imageStrings = [];   // Store data URLs of the images
+  
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.previewImages.push(reader.result as string);  // Add each preview image URL
+          this.imageStrings.push(reader.result as string);   // Store the base64 image data
+        };
+        reader.readAsDataURL(file);
+      });
     }
   }
   
+  
   clearImage(): void {
-    this.previewImage = null;
-    this.imageString = null;
+    this.previewImages = [];
+    this.imageStrings = [];
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -182,7 +223,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     
     const newStar = {
       starId: "",
-      content_img: this.imageString || '',
+      content_imgs: [...this.imageString || ''],
       content: textarea.value,
       user: this.loggedUser!,
       timestamp: new Date().toISOString(),

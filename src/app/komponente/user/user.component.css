@@ -50,6 +50,20 @@ body {
     border-width: 1px;
 }
 
+.navprofile{
+  background-size: cover; 
+  background-position: center; 
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  margin-right: 10px;
+}
+
+.postUserProfile{
+  background-size: cover; 
+  background-position: center; 
+  cursor: pointer;
+}
 
 #logoinput{
     display: flex;
@@ -211,9 +225,6 @@ section {
     padding-left: 10px;
   }
 
-  img{
-    margin: 5px 25px 15px 25px;
-  }
 
   #logo{
     cursor: pointer;
@@ -224,9 +235,110 @@ section {
     background-color: red;
   }
   
+  .image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    cursor: pointer;
+  }
+  
+  .image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .image-container {
+    position: relative;
+    max-width: 80%;
+    max-height: 80%;
+  
+  }
+  
+  .image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .image-modal .prev,
+  .image-modal .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    width: 50px;
+    z-index: 1001;
+  }
+  
   
 
-  
+.image-modal .prev {
+  left: -50px;
+}
+
+.image-modal .next {
+  right: -50px;
+}
+
+.image-modal .prev:hover,
+.image-modal .next:hover {
+  background: white;
+}
+
+
+img{
+  max-width: 60%;
+  margin: 15px 25px 15px 25px;
+  cursor: pointer;
+}
+mat-grid-tile {
+  background: rgb(13, 13, 14);
+}
+
+mat-grid-list{
+  margin-top: 20px;
+  margin-left: 10%;
+  max-width: 80%;
+}
+
+.overlay {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  width: calc(33.33% - 10px);
+  height: auto;
+}
+
+.overlay span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+
   
 
 

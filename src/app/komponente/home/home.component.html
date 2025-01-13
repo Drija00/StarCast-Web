@@ -7,6 +7,11 @@
             </svg>
         </a>
         <span class="example-spacer"></span>
+        <div mat-card-avatar 
+            [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
+            class="navprofile"
+            (click)="redirectToUser(loggedUser?.userId!)">
+        </div>
         <button mat-icon-button class="example-icon favorite-icon" matTooltip="Logout" aria-label="Example icon-button with heart icon" (click)="redirectToLogin()">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
         </button>
@@ -25,8 +30,8 @@
                     <div 
                         mat-card-avatar 
                         [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
-                        style="background-size: cover; background-position: center;"
-                        (click)="redirectToUser()">
+                        class="postUserProfile"
+                        (click)="redirectToUser(loggedUser?.userId!)">
                     </div>
                     <form class="example-form">
                         <mat-form-field class="example-full-width">
@@ -35,16 +40,21 @@
                         <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
                         </mat-form-field>
                         <div id="divPreview">
-                        <img *ngIf="previewImage" [src]="previewImage" alt="Image preview" class="previewImage" />
+                        <div *ngIf="previewImages.length > 0">
+                            <div *ngFor="let preview of previewImages">
+                                <img draggable="true" [src]="preview" alt="Image preview" class="previewImage" />
+                            </div>
+                        </div>
+                              
                         
-                        <button *ngIf="previewImage" mat-icon-button color="warn" (click)="clearImage()" aria-label="Clear image"> <mat-icon>close</mat-icon> </button>
+                        <button *ngIf="previewImages.length > 0" mat-icon-button color="warn" (click)="clearImage()" aria-label="Clear image"> <mat-icon>close</mat-icon> </button>
                         </div>
                     </form>
                 </div>
                 <div class="postButton">
                     <label class="custom-file-upload">
                         <mat-icon id="uploadicon">cloud_upload</mat-icon>   Upload image
-                        <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="display: none;">
+                        <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="display: none;" multiple>
                     </label>
                     <button mat-stroked-button id="postbutton" [disabled]="!message.value || message.value.trim().length === 0" (click)="postStar(message)">Release</button>  
                 </div> 
@@ -56,20 +66,41 @@
                     <div 
                         mat-card-avatar 
                         [style.background-image]="'url(' + star.user.profile_img + ')'" 
-                        style="background-size: cover; background-position: center; cursor: pointer;" (click)="backToHome()">
+                        style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(star.user.userId)">
                     </div>
                     <mat-card-title class="title" style="cursor: pointer;" (click)="backToHome()">{{star.user.username}}</mat-card-title>
                 </div>
                 <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
                 </mat-card-header>
-                <mat-card-content style="margin-left: 5px;">
+                <mat-card-content style="margin-left: 8%; margin-right: 8%;">
                     <p>
                         {{star.content}}
                     </p>
                 </mat-card-content>
-                <ng-container *ngIf="star?.content_img">
-                    <img mat-card-image [src]="star.content_img" />
-                </ng-container>
+                <ng-container *ngIf="star?.content_imgs">
+                    <mat-grid-list cols="1" rowHeight="2:1">
+                        <!-- Display the first image -->
+                        <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
+                          <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                        </mat-grid-tile>
+                      
+                        <!-- If there are exactly two images, display the second image next to the first -->
+                        <mat-grid-tile *ngIf="star.content_imgs.length === 2">
+                          <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
+                        </mat-grid-tile>
+                      
+                        <!-- If there are more than two images, show the overlay with the count of remaining images -->
+                        <mat-grid-tile *ngIf="star.content_imgs.length > 2">
+                          <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
+                            <span>+{{ star.content_imgs.length - 1 }} more</span>
+                          </div>
+                        </mat-grid-tile>
+                      </mat-grid-list>
+                      
+                      
+                  </ng-container>
+                  
+                  
                 <mat-card-actions>
                 <button mat-button>LIKE</button>
                 <button mat-button>SHARE</button>
@@ -81,4 +112,13 @@
             Loading...
         </div>
     </div>
+    <div class="image-modal" *ngIf="expandedImages.length > 0" (click)="closeImage()">
+        <div class="image-container" (click)="$event.stopPropagation()">
+          <button class="prev" *ngIf="currentImageIndex > 0" (click)="prevImage($event)">&#10094;</button>
+          <img [src]="expandedImages[currentImageIndex]" alt="Expanded image" />
+          <button class="next" *ngIf="currentImageIndex < expandedImages.length - 1" (click)="nextImage($event)">&#10095;</button>
+        </div>
+    </div>
+      
+      
 </body>
