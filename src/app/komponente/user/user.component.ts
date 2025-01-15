@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { Router,ActivatedRoute } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {
   AfterViewInit,
@@ -23,6 +23,7 @@ import { MatCardModule } from '@angular/material/card';
 import { User } from '../../users';
 import { DataService } from '../../servisi/data.service';
 import { Star, stars } from '../../posts';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-user',
@@ -55,12 +56,13 @@ export class UserComponent  implements OnInit{
   imageString: string | null = null;
   user: any;
   post:boolean = true;
+  
   expandedImages: string[] = [];
   currentImageIndex: number = 0;
   currentImageSet: string[] = [];
 
   constructor(private router: Router,
-    private route: ActivatedRoute , private cdr: ChangeDetectorRef, private dataService: DataService){}
+    private route: ActivatedRoute , private cdr: ChangeDetectorRef, private dataService: DataService,private sanitizer: DomSanitizer){}
 
   ngOnInit(): void {
      const userId = this.route.snapshot.paramMap.get('id');
@@ -74,6 +76,7 @@ export class UserComponent  implements OnInit{
     }
     this.user = this.dataService.getUser(userId);
 
+    
     console.log(this.user)
     const userJson = localStorage.getItem('logged_user');
     if (userJson) {
@@ -116,6 +119,9 @@ export class UserComponent  implements OnInit{
     
       this.observer.observe(this.scrollMarker.nativeElement);
     }
+    getSanitizedUrl(url: string) {
+      return this.sanitizer.bypassSecurityTrustUrl(url);
+    }
 
     loadStars(starId:string): void {
       if (this.loading) {
@@ -148,7 +154,6 @@ export class UserComponent  implements OnInit{
       this.expandedImages = images;
       this.currentImageIndex = index;
     }
-  
     closeImage(): void {
       this.expandedImages = [];
       this.currentImageIndex = 0;
@@ -213,6 +218,13 @@ export class UserComponent  implements OnInit{
     if (fileInput) {
       fileInput.value = '';
     }
+  }
+
+  formatDate(date:Date):String {
+    const month = date.toLocaleString('en-US', { month: 'long' });
+    const year = date.getFullYear();
+
+    return `${month} ${year}`;
   }
 
   postStar(textarea: HTMLTextAreaElement){

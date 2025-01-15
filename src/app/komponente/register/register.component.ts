@@ -25,16 +25,22 @@ export class RegisterComponent {
   password:any;
   password2:any;
   username:any;
+  firstname:any;
+  lastname:any;
 
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   signup: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.min(3) ]),
+    firstname: new FormControl('', [Validators.required, Validators.min(3) ]),
+    lastname: new FormControl('', [Validators.required, Validators.min(3) ]),
     email: new FormControl('', [Validators.email, Validators.required ]),
     password: new FormControl('', [Validators.required, Validators.min(3) ]),
     password2: new FormControl('', [Validators.required, Validators.min(3) ])
   });
   hide = true;
   get usernameInput() {return this.signup.get('username');}
+  get firstnameInput() {return this.signup.get('firstname');}
+  get lastnameInput() {return this.signup.get('lastname');}
   get emailInput() { return this.emailFormControl.get('email'); }
   get passwordInput() { return this.signup.get('password'); }  
   get password2Input() { return this.signup.get('password2'); }  
@@ -50,6 +56,10 @@ export class RegisterComponent {
     users.push({
       userId: "",
       username: this.username,
+      firstname: this.firstname,
+      lastname: this.lastname,
+      description: "",
+      date: new Date(),
       email: this.email,
       password: this.password,
       active: true,

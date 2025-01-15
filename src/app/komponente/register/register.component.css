@@ -8,6 +8,8 @@ body {
 
 
 .login-form {
+    display: flex;
+    flex-direction: column;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -22,13 +24,29 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 300px;
+    width: 700px;
+    min-height: 50%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.inputs{
+    display: flex;
+    flex-direction: row;
+}
+
+.section{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .login-input {
     margin: 10px 0;
-    width: 100%;
+    width: 300px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 .mat-mdc-button:not(:disabled){
     color: white;
@@ -46,7 +64,7 @@ body {
 
 h1.login {
     color: white;
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin-bottom: 20px;
 }   
 

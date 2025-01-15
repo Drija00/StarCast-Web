@@ -16,11 +16,24 @@
         <h1 class = "login">
             <label>Sign up</label>
         </h1>
+        <div class="inputs">
+            <div class="section">
             <mat-form-field class="login-input" appearance="outline">
-                <mat-label>Username</mat-label>
-                <input type="email" matInput [(ngModel)]="username" placeholder="Ex. pat">
+                <mat-label>Firstname</mat-label>
+                <input type="text" matInput [(ngModel)]="firstname" placeholder="Ex. pat">
             </mat-form-field>
 
+            <mat-form-field class="login-input" appearance="outline">
+                <mat-label>Lastname</mat-label>
+                <input type="text" matInput [(ngModel)]="lastname" placeholder="Ex. pat">
+            </mat-form-field>
+            
+            <mat-form-field class="login-input" appearance="outline">
+                <mat-label>Username</mat-label>
+                <input type="text" matInput [(ngModel)]="username" placeholder="Ex. pat">
+            </mat-form-field>
+        </div>
+        <div class="section">
             <mat-form-field class="login-input" appearance="outline">
                 <mat-label>Email</mat-label>
                 <input type="email" matInput [(ngModel)]="email" placeholder="Ex. pat@example.com">
@@ -37,6 +50,8 @@
                 <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                 <mat-hint *ngIf="passwordInput?.value">Re-enter your password</mat-hint>
             </mat-form-field>
+        </div>
+    </div>
 
             <p style="color: white;">
                 Back to 

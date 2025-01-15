@@ -22,7 +22,30 @@
 
     <div id="feed">
         <div id="scroll" #scroll (scroll)="onScroll()">
+
+            <div class="profile">
+                <img id="backgroundImage"
+                        [src]="getSanitizedUrl(user?.background_img!)" 
+                        (click)="expandImages([user?.background_img!],0)" 
+                        alt="Gallery Image" />
+                <div class="wrapper">
+                    <div 
+                        mat-card-avatar 
+                        [style.background-image]="'url(' + user?.profile_img + ')'" 
+                        (click)="expandImages([user?.profile_img],0)"
+                        class="postUserProfile profileBanner">
+                        
+                    </div>
+                    <div >
+                        <h1 class="profileTitle">{{ user?.firstname }} {{ user?.lastname }}</h1>
+                        <h3 class="profileTitle"> {{user?.username}}</h3>
+                        <h4 class="profileTitle">Joined {{formatDate(user?.date)}}</h4>
+                        <p class="profileTitle" > {{user?.description}}</p>
+                    </div>
+                </div>
+            </div>
             <div class="postinput" *ngIf="post">
+                
                 <div id="logoinput">
                     <div 
                         mat-card-avatar 
@@ -59,7 +82,7 @@
                         [style.background-image]="'url(' + star.user.profile_img + ')'" 
                         style="background-size: cover; background-position: center; cursor: pointer;">
                     </div>
-                    <mat-card-title class="title" style="cursor: pointer;" (click)="backToHome()">{{star.user.username}}</mat-card-title>
+                    <mat-card-title class="title" (click)="backToHome()">{{star.user.username}}</mat-card-title>
                 </div>
                 <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
                 </mat-card-header>
@@ -69,16 +92,29 @@
                     </p>
                 </mat-card-content>
                 <ng-container *ngIf="star?.content_imgs">
-                    <mat-grid-list cols="2" rowHeight="2:1">
-                        <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
-                          <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
-                        </mat-grid-tile>
-                        <mat-grid-tile *ngIf="star.content_imgs.length > 2">
-                          <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
-                            <span>+{{ star.content_imgs.length - 1 }} more</span>
-                          </div>
-                        </mat-grid-tile>
-                      </mat-grid-list>
+                    <!--<div id="onlyImageDiv" *ngIf="star.content_imgs.length === 1">
+                        <img id="onlyImage"
+                            [src]="star.content_imgs[0]" 
+                            (click)="expandImages(star.content_imgs, 0)" 
+                            alt="Gallery Image" />
+                    </div>
+                    <div *ngIf="star.content_imgs.length !== 1">-->
+                        <mat-grid-list cols="2" rowHeight="2:1">
+                            <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
+                            <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                            </mat-grid-tile>
+                        
+                            <mat-grid-tile *ngIf="star.content_imgs.length === 2">
+                            <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
+                            </mat-grid-tile>
+                        
+                            <mat-grid-tile *ngIf="star.content_imgs.length > 2">
+                            <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
+                                <span>+{{ star.content_imgs.length - 1 }} more</span>
+                            </div>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    <!--</div>-->
                       
                   </ng-container>
                   

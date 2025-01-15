@@ -9,6 +9,7 @@ body {
     background-size: cover;
     background-position: center;
 }
+
 .image-modal {
   position: fixed;
   top: 0;
@@ -84,9 +85,20 @@ mat-grid-tile {
 mat-grid-list{
   display: flex;
   flex-direction: row;
+  
+  border-radius: 5px;
   margin-top: 20px;
   margin-left: 10%;
   max-width: 80%;
+}
+#onlyImageDiv{
+  display: flex;
+  justify-content: start;
+  height: 50%;
+}
+
+#onlyImage{
+  background: rgb(13, 13, 14);
 }
 
 .overlay {

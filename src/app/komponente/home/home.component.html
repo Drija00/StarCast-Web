@@ -72,31 +72,35 @@
                 </div>
                 <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
                 </mat-card-header>
-                <mat-card-content style="margin-left: 8%; margin-right: 8%;">
+                <mat-card-content style="margin-left: 10px; margin-right: 10px;">
                     <p>
                         {{star.content}}
                     </p>
                 </mat-card-content>
                 <ng-container *ngIf="star?.content_imgs">
-                    <mat-grid-list cols="1" rowHeight="2:1">
-                        <!-- Display the first image -->
-                        <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
-                          <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
-                        </mat-grid-tile>
-                      
-                        <!-- If there are exactly two images, display the second image next to the first -->
-                        <mat-grid-tile *ngIf="star.content_imgs.length === 2">
-                          <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
-                        </mat-grid-tile>
-                      
-                        <!-- If there are more than two images, show the overlay with the count of remaining images -->
-                        <mat-grid-tile *ngIf="star.content_imgs.length > 2">
-                          <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
-                            <span>+{{ star.content_imgs.length - 1 }} more</span>
-                          </div>
-                        </mat-grid-tile>
-                      </mat-grid-list>
-                      
+                    <!--<div id="onlyImageDiv" *ngIf="star.content_imgs.length === 1">
+                        <img id="onlyImage"
+                            [src]="star.content_imgs[0]" 
+                            (click)="expandImages(star.content_imgs, 0)" 
+                            alt="Gallery Image" />
+                    </div>
+                    <div *ngIf="star.content_imgs.length !== 1">-->
+                        <mat-grid-list cols="2" rowHeight="2:1">
+                            <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
+                            <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                            </mat-grid-tile>
+                        
+                            <mat-grid-tile *ngIf="star.content_imgs.length === 2">
+                            <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
+                            </mat-grid-tile>
+                        
+                            <mat-grid-tile *ngIf="star.content_imgs.length > 2">
+                            <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
+                                <span>+{{ star.content_imgs.length - 1 }} more</span>
+                            </div>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    <!--</div>-->
                       
                   </ng-container>
                   
