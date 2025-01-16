@@ -71,6 +71,43 @@ body {
 .image-modal .next:hover {
   background: white;
 }
+.image-container-post {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-box-post {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.image-box-post img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background-color: darkred;
+}
 
 
 img{
@@ -319,9 +356,8 @@ section {
   }
 
   .previewImage{
-    max-width: 80%; 
-    height: auto; 
-    margin-top: 10px;
+    margin: 0px;
+    max-width: 100%;
   }
 
   .postButton{

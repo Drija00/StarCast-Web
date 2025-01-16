@@ -11,7 +11,7 @@ export interface Star {
 export const stars:Star[] = [
     {
         starId: "asd89ds0-0s90--9das-b1e4-234901aa51f2",
-        content_imgs: ["https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png","https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png","https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png","https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png","https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png"],
+        content_imgs: ["https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png","https://cdn.pixabay.com/photo/2025/01/12/00/23/work-9327224_1280.jpg","https://cdn.pixabay.com/photo/2025/01/10/23/42/galleon-9324977_1280.jpg","https://cdn.pixabay.com/photo/2025/01/11/08/16/robin-9325498_1280.jpg","https://cdn.pixabay.com/photo/2014/04/14/20/11/pink-324175_1280.jpg"],
         content: "Trump won!!!",
         user: {
           userId: "1ed32ee2-59d4-44e1-b1e4-234901aa51f2",
@@ -68,7 +68,7 @@ export const stars:Star[] = [
       },
       {
         starId: "4das98d-d58d-a85a-b1e4-234901aa51f2",
-        content_imgs: ["https://cdn.pixabay.com/photo/2018/03/22/09/14/football-3249778_960_720.png","https://cdn.pixabay.com/photo/2018/03/22/09/14/football-3249778_960_720.png"],
+        content_imgs: ["https://cdn.pixabay.com/photo/2018/03/22/09/14/football-3249778_960_720.png","https://cdn.pixabay.com/photo/2024/12/30/13/06/moped-9300285_960_720.jpg"],
         content: "Danas je fantazi liga!!",
         user: {
           userId: "cdd963a4-8edb-471c-8b42-8de16ca64241",
@@ -105,7 +105,7 @@ export const stars:Star[] = [
         timestamp: "2024-12-26 12:15:22",
       },{
         starId: "asd89ds0-0s90--9das-b1e4-234901aa51f2",
-        content_imgs: ["https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png"],
+        content_imgs: ["https://cdn.pixabay.com/photo/2017/01/31/19/15/cartoon-2026571_960_720.png","https://cdn.pixabay.com/photo/2017/02/08/17/24/fantasy-2049567_1280.jpg","https://cdn.pixabay.com/photo/2025/01/08/00/51/steampunk-9317987_960_720.jpg"],
         content: "Trump won!!!",
         user: {
           userId: "1ed32ee2-59d4-44e1-b1e4-234901aa51f2",

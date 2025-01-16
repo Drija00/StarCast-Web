@@ -40,14 +40,13 @@
                         <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
                         </mat-form-field>
                         <div id="divPreview">
-                        <div *ngIf="previewImages.length > 0">
-                            <div *ngFor="let preview of previewImages">
-                                <img draggable="true" [src]="preview" alt="Image preview" class="previewImage" />
+                        <div class="image-container-post" *ngIf="previewImages.length > 0">
+                            <div class="image-box-post" *ngFor="let preview of previewImages ; let i = index" >
+                                <img [src]="preview" alt="Image preview" class="previewImage" />
+                                <button class="remove-btn" (click)="removeImage(i)">X</button>
                             </div>
                         </div>
                               
-                        
-                        <button *ngIf="previewImages.length > 0" mat-icon-button color="warn" (click)="clearImage()" aria-label="Clear image"> <mat-icon>close</mat-icon> </button>
                         </div>
                     </form>
                 </div>
@@ -68,7 +67,7 @@
                         [style.background-image]="'url(' + star.user.profile_img + ')'" 
                         style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(star.user.userId)">
                     </div>
-                    <mat-card-title class="title" style="cursor: pointer;" (click)="backToHome()">{{star.user.username}}</mat-card-title>
+                    <mat-card-title class="title" style="cursor: pointer;" (click)="redirectToUser(star.user.userId)">{{ star?.user?.firstname }} {{ star?.user?.lastname }}</mat-card-title>
                 </div>
                 <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
                 </mat-card-header>

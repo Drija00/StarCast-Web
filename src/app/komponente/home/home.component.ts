@@ -71,6 +71,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/image-detail', imageId]);
   }
 
+  removeImage(index: number): void {
+    this.previewImages.splice(index, 1);
+  }
+  
+  clearImage(): void {
+    this.previewImages = [];
+    this.imageStrings = [];
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
   closeImage(): void {
     this.expandedImages = [];
     this.currentImageIndex = 0;
@@ -209,21 +222,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
   
-  
-  clearImage(): void {
-    this.previewImages = [];
-    this.imageStrings = [];
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
-  }
 
   postStar(textarea: HTMLTextAreaElement){
-    
     const newStar = {
       starId: "",
-      content_imgs: [...this.imageString || ''],
+      content_imgs: [...this.previewImages],
       content: textarea.value,
       user: this.loggedUser!,
       timestamp: new Date().toISOString(),
@@ -231,10 +234,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     console.log('Posting star:', newStar);
     this.previewImage = null;
     this.imageString = null;
+    this.clearImage()
     this.stars.unshift(newStar);
     textarea.value = "";  
     this.cdr.detectChanges();
     console.log(this.stars)
-
   }
 }

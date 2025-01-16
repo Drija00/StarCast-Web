@@ -8,6 +8,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, formatDate } from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
+
+import { cilCalendar, cilList, cilShieldAlt } from '@coreui/icons';
+import { IconDirective } from '@coreui/icons-angular';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -38,7 +41,8 @@ import { DomSanitizer } from '@angular/platform-browser';
       CommonModule,
       MatFormFieldModule,
       MatInputModule,
-      MatGridListModule],
+      MatGridListModule,
+      IconDirective],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
@@ -56,7 +60,11 @@ export class UserComponent  implements OnInit{
   imageString: string | null = null;
   user: any;
   post:boolean = true;
+  icons = { cilList, cilCalendar };
   
+  
+  previewImages: string[] = [];
+  imageStrings: string[] = [];
   expandedImages: string[] = [];
   currentImageIndex: number = 0;
   currentImageSet: string[] = [];
@@ -194,26 +202,37 @@ export class UserComponent  implements OnInit{
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput?.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-  
+      const files = Array.from(fileInput.files);  // Convert FileList to an array
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Invalid file type. Please select a JPEG or PNG image.');
+      const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Invalid file type(s). Please select only JPEG or PNG images.');
         return;
       }
   
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewImage = reader.result as string;
-        this.imageString = reader.result as string; 
-      };
-      reader.readAsDataURL(file);
+      // Reset previews
+      this.previewImages = [];  // If you want to show previews for multiple images
+      this.imageStrings = [];   // Store data URLs of the images
+  
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.previewImages.push(reader.result as string);  // Add each preview image URL
+          this.imageStrings.push(reader.result as string);   // Store the base64 image data
+        };
+        reader.readAsDataURL(file);
+      });
     }
   }
   
+  removeImage(index: number): void {
+    this.previewImages.splice(index, 1);
+  }
+  
   clearImage(): void {
-    this.previewImage = null;
-    this.imageString = null;
+    this.previewImages = [];
+    this.imageStrings = [];
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -231,7 +250,7 @@ export class UserComponent  implements OnInit{
     
     const newStar = {
       starId: "",
-      content_imgs: [...this.imageString || ''],
+      content_imgs: [...this.previewImages],
       content: textarea.value,
       user: this.loggedUser!,
       timestamp: new Date().toISOString(),
@@ -241,6 +260,7 @@ export class UserComponent  implements OnInit{
     this.imageString = null;
     this.stars.unshift(newStar);
     textarea.value = "";  
+    this.clearImage()
     this.cdr.detectChanges();
     console.log(this.stars)
 
