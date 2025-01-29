@@ -226,6 +226,49 @@ export class UserComponent  implements OnInit{
     }
   }
   
+  onBackgroundButtonSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput?.files && fileInput.files.length > 0) {
+      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Invalid file type(s). Please select only JPEG or PNG images.');
+        return;
+      }
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => { // Store the base64 image data
+          this.user.background_img = reader.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+      console.log(this.imageStrings[0]) 
+    }
+  }
+  
+  onProfileButtonSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput?.files && fileInput.files.length > 0) {
+      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Invalid file type(s). Please select only JPEG or PNG images.');
+        return;
+      }
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => { // Store the base64 image data
+          this.user.profile_img = reader.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+  
   removeImage(index: number): void {
     this.previewImages.splice(index, 1);
   }

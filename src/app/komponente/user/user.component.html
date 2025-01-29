@@ -28,14 +28,26 @@
                         [src]="getSanitizedUrl(user?.background_img!)" 
                         (click)="expandImages([user?.background_img!],0)" 
                         alt="Gallery Image" />
+                <label class="backgroundButton">
+                    <mat-icon>add_circle</mat-icon>
+                    <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onBackgroundButtonSelected($event)" style="display: none;">
+                </label>
                 <div class="wrapper">
                     <div class="columnflexdivs">
+                        
+                        
                         <div 
                             mat-card-avatar 
                             [style.background-image]="'url(' + user?.profile_img + ')'" 
                             (click)="expandImages([user?.profile_img],0)"
                             class="postUserProfile profileBanner">
+                            <label class="profileButton"  (click)="$event.stopPropagation()">
+                                <mat-icon>add_circle</mat-icon>
+                                <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onProfileButtonSelected($event)" style="display: none;">
+                            </label>
+                            <!--<p id="profileChangeLink" (click)="onProfileButtonSelected($event)">Edit profile picture</p>-->
                         </div>
+                        
                         <div style="display: flex; flex-direction: row;">
                             <div class="columnflexdivs">
                                 <p class="followers">Followers</p>

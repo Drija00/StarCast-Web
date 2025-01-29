@@ -6,6 +6,48 @@ body {
     align-items: center;
 }
 
+.register-form {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    padding: 20px;
+    border-radius: 25px;
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 700px;
+    min-height: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.register-input {
+    margin: 10px 0;
+    width: 300px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.inputs{
+    display: flex;
+    flex-direction: row;
+}
+
+.section{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 #naslov{
     font-family: 'YourFontName', sans-serif;
     position: absolute;

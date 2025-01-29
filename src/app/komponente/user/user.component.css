@@ -93,25 +93,29 @@ body {
   justify-content: center;
   cursor: pointer;
   position: relative;
-  bottom: 9vh;
+  top: -20vh;
+  margin-left: 10px;
 }
 
 .wrapper{
   display: flex;
   align-items: center;
-  margin-left: 15px;
   min-width: 100%;
 }
 
 .profiletext{
   display: flex;
-  margin-bottom: 6vh;
+  position: relative;
+  top: -7vh;
+  margin-bottom: 17vh;
   flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .columnflexdivs{
-  display: flex; flex-direction: column; align-items: center;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
 }
 
 .profileDesc{
@@ -330,16 +334,68 @@ section {
     cursor: pointer;
   }
 
+.profileButton {
+  position: absolute;
+  bottom: -1.7vh; /* Adjust as needed to position slightly outside the profile image */
+  right: -1vw;
+  color: rgb(255, 255, 255);
+  border: none;
+  background-color: rgba(0, 0, 0, 0.6); /* Add background to make it visible */
+  border-radius: 50%;
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.profileButton mat-icon {
+  font-size: 25px;
+}
+
+.profileButton:hover {
+  opacity: 1;
+}
+
+  #profileChangeLink{
+    color: rgb(0, 81, 255);
+    text-decoration: underline;
+    cursor: pointer;
+    top: 8vh;
+    font-size: 1.2vh;
+    position: relative;
+    margin-top: 0.8vh;
+  }
+
   .followers{
     font-size: 1.2vh;
     position: relative;
-    bottom: 9vh;
+    top: -20vh;
+    margin-top: 0.8vh;
   }
   .followers-count{
     font-size: 1.8vh;
     font-weight: bold;
     position: relative;
-    bottom: 9vh;
+    top: -21vh;
+  }
+  
+  .backgroundButton{
+    position: relative;
+    left: 22vw;
+    top: -7vh;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 25px;
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+  }
+  .backgroundButton mat-icon {
+    font-size: 25px;
+  }
+
+  .backgroundButton:hover{
+    opacity: 1;
   }
   
   .remove-btn:hover {

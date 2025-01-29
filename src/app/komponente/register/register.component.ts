@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {FormControl, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {FormControl, Validators, FormsModule, ReactiveFormsModule, FormBuilder} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,50 +18,52 @@ import {users} from '../../users';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
-  constructor(private router: Router){}
-  users = [...users];
-  email:any;
-  password:any;
-  password2:any;
-  username:any;
-  firstname:any;
-  lastname:any;
+export class RegisterComponent implements OnInit{
+  signup!:FormGroup;
+  constructor(private router: Router,private formBuilder: FormBuilder){
+    
+  }
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  signup: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.min(3) ]),
-    firstname: new FormControl('', [Validators.required, Validators.min(3) ]),
-    lastname: new FormControl('', [Validators.required, Validators.min(3) ]),
-    email: new FormControl('', [Validators.email, Validators.required ]),
-    password: new FormControl('', [Validators.required, Validators.min(3) ]),
-    password2: new FormControl('', [Validators.required, Validators.min(3) ])
-  });
+  ngOnInit() {
+    this.signup = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.min(3) ]],
+      firstname: ['', [Validators.required, Validators.min(3) ]],
+      lastname: ['', [Validators.required, Validators.min(3) ]],
+      email: ['', [Validators.email, Validators.required ]],
+      password: ['', [Validators.required, Validators.min(3) ]],
+      password2: ['', [Validators.required, Validators.min(3) ]]
+    })
+  }
+  
+  users = [...users];
+
   hide = true;
   get usernameInput() {return this.signup.get('username');}
   get firstnameInput() {return this.signup.get('firstname');}
   get lastnameInput() {return this.signup.get('lastname');}
-  get emailInput() { return this.emailFormControl.get('email'); }
+  get emailInput() { return this.signup.get('email'); }
   get passwordInput() { return this.signup.get('password'); }  
   get password2Input() { return this.signup.get('password2'); }  
 
   register(): boolean {
+
+    const formValues = this.signup.value;
     let idCounter=0;
     for (const u of users) {
       idCounter++;
-      if (u.email === this.email || u.username === this.username || this.password!==this.password2) {
+      if (u.email === formValues.email || u.username === formValues.username || formValues.password!==formValues.password2) {
         return false;
       }
     }
     users.push({
       userId: "",
-      username: this.username,
-      firstname: this.firstname,
-      lastname: this.lastname,
+      username: formValues.username,
+      firstname: formValues.firstname,
+      lastname: formValues.lastname,
       description: "",
       date: new Date(),
-      email: this.email,
-      password: this.password,
+      email: formValues.email,
+      password: formValues.password,
       active: true,
       profile_img: "",
       background_img: ""
