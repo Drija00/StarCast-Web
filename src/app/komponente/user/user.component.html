@@ -24,52 +24,68 @@
         <div id="scroll" #scroll (scroll)="onScroll()">
 
             <div class="profile">
-                <img id="backgroundImage"
-                        [src]="getSanitizedUrl(user?.background_img!)" 
-                        (click)="expandImages([user?.background_img!],0)" 
-                        alt="Gallery Image" />
-                <label class="backgroundButton">
-                    <mat-icon>add_circle</mat-icon>
-                    <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onBackgroundButtonSelected($event)" style="display: none;">
-                </label>
-                <div class="wrapper">
-                    <div class="columnflexdivs">
-                        
-                        
-                        <div 
+                <div id="backgroundDiv" 
+                    [ngStyle]="{'background-image': 'url(' + user?.background_img + ')'}" 
+                    (click)="expandImages([user?.background_img!], 0)" 
+                    class="background-div">
+
+                    <div 
                             mat-card-avatar 
                             [style.background-image]="'url(' + user?.profile_img + ')'" 
-                            (click)="expandImages([user?.profile_img],0)"
+                            (click)="expandImages([user?.profile_img],0,$event)"
                             class="postUserProfile profileBanner">
-                            <label class="profileButton"  (click)="$event.stopPropagation()">
+                            <label class="profileButton" *ngIf="post" (click)="$event.stopPropagation()">
                                 <mat-icon>add_circle</mat-icon>
                                 <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onProfileButtonSelected($event)" style="display: none;">
                             </label>
-                            <!--<p id="profileChangeLink" (click)="onProfileButtonSelected($event)">Edit profile picture</p>-->
+                            <!--<p id="profileChangeLink" (click)="onProfileButtonSelected($event)">Edit profile picture</p> --ovo je bilo zakomentarisano-->
+                        </div>
+                    <label class="backgroundButton" *ngIf="post">
+                        <mat-icon>add_circle</mat-icon>
+                        <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onBackgroundButtonSelected($event)" style="display: none;">
+                    </label>
+                </div>
+
+                        
+                    <div class="wrapper">
+                        <div class="columnflexdivs">
+                            
+                            
+                            <div style="display: flex; flex-direction: row;">
+                                <div class="columnflexdivs">
+                                    <p class="followers">Followers</p>
+                                    <p class="followers-count">65</p>
+                                </div>
+                                <div class="columnflexdivs">
+                                    <p class="followers">Followings</p>
+                                    <p class="followers-count">75</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profiletext">
+                            <h1>{{ user?.firstname }} {{ user?.lastname }}</h1>
+                            <h3>&#64;{{user?.username}}</h3>
+                            <p class="profileDesc" > {{user?.description}}</p>
+                            <div class="datewrapper">
+                                <svg [cIcon]="icons.cilCalendar" id="calendar"></svg>
+                                <p class="joined">Joined {{formatDate(user?.date)}}</p>
+                            </div>
+                        </div>
+                        <span style="flex: 1 1;"></span>
+                        <div class="followDivButton">
+                            <button 
+                            mat-stroked-button 
+                            id="followButton" 
+                            *ngIf="!post">
+                            {{ user?.active ? 'Unfollow' : 'Follow' }} <!-- Ovde treba setovati u odnosu da li prati korisnika ili ne, ukolniti da gleda po activu sluzi samo za mock-->
+                            </button> 
                         </div>
                         
-                        <div style="display: flex; flex-direction: row;">
-                            <div class="columnflexdivs">
-                                <p class="followers">Followers</p>
-                                <p class="followers-count">65</p>
-                            </div>
-                            <div class="columnflexdivs">
-                                <p class="followers">Followings</p>
-                                <p class="followers-count">75</p>
-                            </div>
-                        </div>
                     </div>
-                    <div class="profiletext">
-                        <h1>{{ user?.firstname }} {{ user?.lastname }}</h1>
-                        <h3>&#64;{{user?.username}}</h3>
-                        <p class="profileDesc" > {{user?.description}}</p>
-                        <div class="datewrapper">
-                            <svg [cIcon]="icons.cilCalendar" id="calendar"></svg>
-                             <p class="joined">Joined {{formatDate(user?.date)}}</p>
-                        </div>
-                    </div>
-                </div>
+                        
+            
             </div>
+
             <div class="postinput" *ngIf="post">
                 
                 <div id="logoinput">

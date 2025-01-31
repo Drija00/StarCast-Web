@@ -45,7 +45,7 @@ export const users:User[] = [
         username: "tamarat",
         email: "tamarat@telekom.rs",
         password: "tamarat",
-        active: true,
+        active: false,
         profile_img: "https://cdn.pixabay.com/photo/2014/03/24/17/19/teacher-295387_1280.png",
         background_img: "https://cdn.pixabay.com/photo/2021/01/05/06/40/boat-5889919_1280.png",
         firstname: "Tamara",

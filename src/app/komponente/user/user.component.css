@@ -87,13 +87,9 @@ body {
   border-width: 2px;
   border-color: rgba(255, 255, 255, 0.5);
   background-color: rgb(22, 18, 21);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
   position: relative;
-  top: -20vh;
+  top: 7vh;
   margin-left: 10px;
 }
 
@@ -104,18 +100,43 @@ body {
 }
 
 .profiletext{
+  align-items: start;
+  justify-content: start;
   display: flex;
-  position: relative;
-  top: -7vh;
-  margin-bottom: 17vh;
+  margin-top: 5px;
+  margin-bottom: 10px;
   flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
 }
+.background-div {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: space-between;
+  width: 100%;
+  height: 350px;
+  background-size: cover;
+  background-position: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+}
+
 
 .columnflexdivs{
   display: flex; 
   flex-direction: column; 
   align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 15px;
 }
 
 .profileDesc{
@@ -163,6 +184,14 @@ p{
 #logoinput{
     display: flex;
     flex-direction: row;
+}
+
+.followDivButton{
+  display: flex; justify-content: center; align-items: start; height: 100%; margin-top: 20px; margin-right: 20px;
+}
+
+#followButton{
+  max-width: 100px;
 }
 
 #postbutton{
@@ -307,7 +336,6 @@ section {
   }
   
   .image-box-post {
-    position: relative;
     width: 100px;
     height: 100px;
     overflow: hidden;
@@ -368,27 +396,20 @@ section {
 
   .followers{
     font-size: 1.2vh;
-    position: relative;
-    top: -20vh;
     margin-top: 0.8vh;
   }
   .followers-count{
     font-size: 1.8vh;
     font-weight: bold;
-    position: relative;
-    top: -21vh;
   }
   
   .backgroundButton{
-    position: relative;
-    left: 22vw;
-    top: -7vh;
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 25px;
-  opacity: 0.8;
-  transition: opacity 0.2s ease-in-out;
-  cursor: pointer;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 25px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease-in-out;
+    cursor: pointer;
   }
   .backgroundButton mat-icon {
     font-size: 25px;
@@ -551,8 +572,8 @@ section {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    height: 60%;
+    align-items: flex-start;
+    min-height: fit-content;
     background-color: rgb(22, 18, 21);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;

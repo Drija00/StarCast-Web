@@ -127,9 +127,12 @@ export class UserComponent  implements OnInit{
     
       this.observer.observe(this.scrollMarker.nativeElement);
     }
-    getSanitizedUrl(url: string) {
-      return this.sanitizer.bypassSecurityTrustUrl(url);
+    getSanitizedUrl(image: string): string {
+      const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(image);
+      console.log(sanitizedUrl);  // Proveri vrednost URL-a
+      return sanitizedUrl as string;
     }
+    
 
     loadStars(starId:string): void {
       if (this.loading) {
@@ -158,7 +161,10 @@ export class UserComponent  implements OnInit{
       });
     }  
 
-    expandImages(images: string[], index: number): void {
+    expandImages(images: string[], index: number, event?: any) {
+      if(event!=null){
+        event.stopPropagation();
+      }
       this.expandedImages = images;
       this.currentImageIndex = index;
     }

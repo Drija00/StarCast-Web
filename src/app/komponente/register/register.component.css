@@ -7,7 +7,7 @@ body {
 }
 
 
-.login-form {
+.register-form {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -42,7 +42,7 @@ body {
     justify-content: center;
 }
 
-.login-input {
+.register-input {
     margin: 10px 0;
     width: 300px;
     margin-left: 10px;
