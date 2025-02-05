@@ -189,6 +189,13 @@ mat-grid-list{
     background: rgba(255, 255, 255, 0.1);
 }
 
+.search-form-field {
+  margin-left: 25px;
+  width: 20vw;
+  height: 4vh;
+  font-size: 1.8vh;
+}
+
 .postinput{
     padding: 15px;
     margin-top: 15px;
@@ -253,8 +260,12 @@ mat-grid-list{
     align-items: center;
     z-index: 10;
 }
+.search-form-field .mat-mdc-form-field-subscript-wrapper{
+  display: none;
+}
 
 #nav {
+  display: flex;
     background: rgba(0, 0, 0, 0.6);
     height: 80px;
     z-index: 16;
@@ -328,6 +339,20 @@ section {
     position: absolute;
 }
 
+.example-search-card{
+  margin-left: 2px;
+  margin-right: 2px;
+  min-width: 80%;
+  max-width: 80%;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  min-height:auto;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
 .example-card {
     margin-left: 2px;
     margin-right: 2px;
@@ -347,7 +372,26 @@ section {
     padding: 16px 16px 0;
     justify-content: space-between;
     flex-direction: row-reverse;
+    align-items: center;
     margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  #usersearch{
+    display: flex;
+    padding: 16px 16px 0;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .mat-mdc-card-subtitle{
+    margin-left: 10px;
+    color: rgb(126, 126, 126);
+    cursor: pointer;
+
   }
   
 

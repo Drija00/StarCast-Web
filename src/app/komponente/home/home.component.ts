@@ -17,12 +17,14 @@ import {
   HostListener,
   OnInit,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { User } from '../../users';
+import { User, users } from '../../users';
 import { DataService } from '../../servisi/data.service';
 import { Star, stars } from '../../posts';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -48,8 +50,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('scroll', { static: true }) scrollDiv!: ElementRef;
   stars:Star[] = [];
   loading = false;
+  showFeed = true;
+  value = '';
   offset = 0;
   limit = 6;
+  searchedUsers:any[]=[];
   showTopButton = false;
   loggedUser: User | undefined;
   private observer!: IntersectionObserver;
@@ -69,6 +74,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.currentImageIndex = index;
     const imageId = index;
     this.router.navigate(['/image-detail', imageId]);
+  }
+
+  changeFeed(){
+    this.showFeed = !this.showFeed;
   }
 
   removeImage(index: number): void {
@@ -109,6 +118,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   backToHome(){
     console.log("HOME")
+    this.showFeed = true;
     this.router.navigate(['/home',this.loggedUser?.userId]);
   }
 
@@ -118,18 +128,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const userJson = localStorage.getItem('logged_user');
-    this.loadStars();
-    if (userJson) {
-      this.loggedUser = JSON.parse(userJson);
-      console.log(this.loggedUser);
-    }
-    console.log(this.scrollDiv)
-    if (this.scrollDiv) {
-      this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
-    } else {
-      console.error('Element #scroll nije pronađen!');
-    };
+    
+    this.showFeed = true
+    setTimeout(() => {
+      
+      const userJson = localStorage.getItem('logged_user');
+      this.loadStars();
+      if (userJson) {
+        this.loggedUser = JSON.parse(userJson);
+        console.log(this.loggedUser);
+      }
+      console.log(this.scrollDiv)
+      if (this.scrollDiv) {
+        this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
+      } else {
+        console.error('Element #scroll nije pronađen!');
+      };
+    
+    this.cdr.detectChanges()
+    }, 10);
   }
     ngAfterViewInit(): void {
       if (!this.scrollMarker) {
@@ -178,6 +195,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }  
   
+  search() {
+    const searchValue = this.value.toLowerCase().trim();
+  
+    this.searchedUsers = users.filter(user =>
+      user.username.toLowerCase().includes(searchValue) ||
+      user.firstname.toLowerCase().includes(searchValue) ||
+      user.lastname.toLowerCase().includes(searchValue)
+    );
+  
+    this.showFeed = false;
+    this.value = '';
+  }
   
 
   onInput(textarea: HTMLTextAreaElement) {

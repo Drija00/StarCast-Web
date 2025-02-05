@@ -6,6 +6,15 @@
                 <path d="M22 2L14 10M16 2L11 7M20 10L17 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
         </a>
+        <mat-form-field class="search-form-field">
+            <input class="search-input" matInput type="text" [(ngModel)]="value" placeholder="Search the galaxy...">
+            @if (value) {
+              <button matSuffix mat-icon-button aria-label="Clear" (click)="search()">
+                <mat-icon>search</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+          
         <span class="example-spacer"></span>
         <div mat-card-avatar 
             [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
@@ -25,91 +34,109 @@
 
     <div id="feed">
         <div id="scroll" #scroll (scroll)="onScroll()">
-            <div class="postinput">
-                <div id="logoinput">
-                    <div 
-                        mat-card-avatar 
-                        [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
-                        class="postUserProfile"
-                        (click)="redirectToUser(loggedUser?.userId!)">
-                    </div>
-                    <form class="example-form">
-                        <mat-form-field class="example-full-width">
-                        <mat-label>Release a star :)</mat-label>
-                        <textarea matInput #message maxlength="512" rows="1" (input)="onInput(message)" style="overflow: hidden;"></textarea>
-                        <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
-                        </mat-form-field>
-                        <div id="divPreview">
-                        <div class="image-container-post" *ngIf="previewImages.length > 0">
-                            <div class="image-box-post" *ngFor="let preview of previewImages ; let i = index" >
-                                <img [src]="preview" alt="Image preview" class="previewImage" />
-                                <button class="remove-btn" (click)="removeImage(i)">X</button>
-                            </div>
+            <div style="width: 100%; display: flex; flex-direction: column; align-items: center;" *ngIf="showFeed; else elseBlock">
+                <div class="postinput">
+                    <div id="logoinput">
+                        <div 
+                            mat-card-avatar 
+                            [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
+                            class="postUserProfile"
+                            (click)="redirectToUser(loggedUser?.userId!)">
                         </div>
-                              
-                        </div>
-                    </form>
-                </div>
-                <div class="postButton">
-                    <label class="custom-file-upload">
-                        <mat-icon id="uploadicon">cloud_upload</mat-icon>   Upload image
-                        <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="display: none;" multiple>
-                    </label>
-                    <button mat-stroked-button id="postbutton" [disabled]="!message.value || message.value.trim().length === 0" (click)="postStar(message)">Release</button>  
-                </div> 
-            </div>
-              
-            <mat-card class="example-card" appearance="outlined" *ngFor="let star of stars">
-                <mat-card-header>
-                <div class="carddiv">
-                    <div 
-                        mat-card-avatar 
-                        [style.background-image]="'url(' + star.user.profile_img + ')'" 
-                        style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(star.user.userId)">
-                    </div>
-                    <mat-card-title class="title" style="cursor: pointer;" (click)="redirectToUser(star.user.userId)">{{ star?.user?.firstname }} {{ star?.user?.lastname }}</mat-card-title>
-                </div>
-                <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content style="margin-left: 10px; margin-right: 10px;">
-                    <p>
-                        {{star.content}}
-                    </p>
-                </mat-card-content>
-                <ng-container *ngIf="star?.content_imgs">
-                    <!--<div id="onlyImageDiv" *ngIf="star.content_imgs.length === 1">
-                        <img id="onlyImage"
-                            [src]="star.content_imgs[0]" 
-                            (click)="expandImages(star.content_imgs, 0)" 
-                            alt="Gallery Image" />
-                    </div>
-                    <div *ngIf="star.content_imgs.length !== 1">-->
-                        <mat-grid-list cols="2" rowHeight="2:1">
-                            <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
-                            <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
-                            </mat-grid-tile>
-                        
-                            <mat-grid-tile *ngIf="star.content_imgs.length === 2">
-                            <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
-                            </mat-grid-tile>
-                        
-                            <mat-grid-tile *ngIf="star.content_imgs.length > 2">
-                            <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
-                                <span>+{{ star.content_imgs.length - 1 }} more</span>
+                        <form class="example-form">
+                            <mat-form-field class="example-full-width">
+                            <mat-label>Release a star :)</mat-label>
+                            <textarea matInput #message maxlength="512" rows="1" (input)="onInput(message)" style="overflow: hidden;"></textarea>
+                            <mat-hint align="end">{{message.value.length}} / 512</mat-hint>
+                            </mat-form-field>
+                            <div id="divPreview">
+                            <div class="image-container-post" *ngIf="previewImages.length > 0">
+                                <div class="image-box-post" *ngFor="let preview of previewImages ; let i = index" >
+                                    <img [src]="preview" alt="Image preview" class="previewImage" />
+                                    <button class="remove-btn" (click)="removeImage(i)">X</button>
+                                </div>
                             </div>
-                            </mat-grid-tile>
-                        </mat-grid-list>
-                    <!--</div>-->
+                                  
+                            </div>
+                        </form>
+                    </div>
+                    <div class="postButton">
+                        <label class="custom-file-upload">
+                            <mat-icon id="uploadicon">cloud_upload</mat-icon>   Upload image
+                            <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="display: none;" multiple>
+                        </label>
+                        <button mat-stroked-button id="postbutton" [disabled]="!message.value || message.value.trim().length === 0" (click)="postStar(message)">Release</button>  
+                    </div> 
+                </div>
+                  
+                <mat-card class="example-card" appearance="outlined" *ngFor="let star of stars">
+                    <mat-card-header>
+                    <div class="carddiv">
+                        <div 
+                            mat-card-avatar 
+                            [style.background-image]="'url(' + star.user.profile_img + ')'" 
+                            style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(star.user.userId)">
+                        </div>
+                        <mat-card-title class="title" (click)="redirectToUser(star.user.userId)">{{ star?.user?.firstname }} {{ star?.user?.lastname }}</mat-card-title>
+                    </div>
+                    <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content style="margin-left: 10px; margin-right: 10px;">
+                        <p>
+                            {{star.content}}
+                        </p>
+                    </mat-card-content>
+                    <ng-container *ngIf="star?.content_imgs">
+                        <!--<div id="onlyImageDiv" *ngIf="star.content_imgs.length === 1">
+                            <img id="onlyImage"
+                                [src]="star.content_imgs[0]" 
+                                (click)="expandImages(star.content_imgs, 0)" 
+                                alt="Gallery Image" />
+                        </div>
+                        <div *ngIf="star.content_imgs.length !== 1">-->
+                            <mat-grid-list cols="2" rowHeight="2:1">
+                                <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
+                                <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                                </mat-grid-tile>
+                            
+                                <mat-grid-tile *ngIf="star.content_imgs.length === 2">
+                                <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
+                                </mat-grid-tile>
+                            
+                                <mat-grid-tile *ngIf="star.content_imgs.length > 2">
+                                <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
+                                    <span>+{{ star.content_imgs.length - 1 }} more</span>
+                                </div>
+                                </mat-grid-tile>
+                            </mat-grid-list>
+                        <!--</div>-->
+                          
+                      </ng-container>
                       
-                  </ng-container>
-                  
-                  
-                <mat-card-actions>
-                <button mat-button>LIKE</button>
-                <button mat-button>SHARE</button>
-                </mat-card-actions>
-            </mat-card>
-            <div #scrollMarker id="scrollMarker"></div>
+                      
+                    <mat-card-actions>
+                    <button mat-button>LIKE</button>
+                    <button mat-button>SHARE</button>
+                    </mat-card-actions>
+                </mat-card>
+                <div #scrollMarker id="scrollMarker"></div>
+            </div>
+            <ng-template #elseBlock>
+                <mat-card class="example-search-card" appearance="outlined" *ngFor="let user of searchedUsers">
+                    <mat-card-header id="usersearch">
+                    <div class="carddiv">
+                        <div 
+                            mat-card-avatar 
+                            [style.background-image]="'url(' + user.profile_img + ')'" 
+                            style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(user.userId)">
+                        </div>
+                        <mat-card-title class="title1" (click)="redirectToUser(user.userId)">{{ user?.firstname }} {{ user?.lastname }}</mat-card-title>
+                    </div>
+                    <h3 style="font-size: smaller; font-weight: lighter;">&#64;{{user?.username}}</h3>
+                    </mat-card-header>
+                </mat-card>
+                <button (click)="changeFeed()"></button>
+            </ng-template>
         </div>
         <div *ngIf="loading" class="loading-indicator">
             Loading...

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormControl, Validators, FormsModule, ReactiveFormsModule, FormBuilder} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -18,12 +18,12 @@ import {User, users} from '../../users';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
-  constructor(private router: Router, private formBuilder: FormBuilder){console.log(window.innerWidth)}
+export class LoginComponent implements OnInit {
+  constructor(private router: Router, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef){console.log(window.innerWidth)}
   switchForm:boolean=true;
   users = [...users];
-  email:any;
-  password:any;
+  email3:any;
+  password3:any;
   signup!:FormGroup;
 
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -36,15 +36,20 @@ export class LoginComponent {
   get passwordInput1() { return this.signin.get('password'); }  
   
   ngOnInit() {
-    this.signup = this.formBuilder.group({
+    this.switchForm = true;
+    setTimeout(() => {
+      this.signup = this.formBuilder.group({
       username: ['', [Validators.required, Validators.min(3) ]],
       firstname: ['', [Validators.required, Validators.min(3) ]],
       lastname: ['', [Validators.required, Validators.min(3) ]],
       email: ['', [Validators.email, Validators.required ]],
       password: ['', [Validators.required, Validators.min(3) ]],
       password2: ['', [Validators.required, Validators.min(3) ]]
-    })
+      })
+      this.cdr.detectChanges()
+    }, 100);
   }
+  
   
 
 
@@ -53,7 +58,9 @@ export class LoginComponent {
   get firstnameInput() {return this.signup.get('firstname');}
   get lastnameInput() {return this.signup.get('lastname');}
   get emailInput() { return this.signup.get('email'); }
+  get emailInput3() { return this.email3}
   get passwordInput() { return this.signup.get('password'); }  
+  get passwordInput3() { return this.password3 }  
   get password2Input() { return this.signup.get('password2'); }  
 
   register(): boolean {
@@ -86,6 +93,9 @@ export class LoginComponent {
   redirectToLogin = () => {
     if(this.register()){
       this.switchForm = true;
+      setTimeout(() => {
+        this.cdr.detectChanges(); // Odloži osvežavanje da bi se forma sigurno učitala
+      });
     }else{
       window.alert("Invalid credentials!");
     }
@@ -93,7 +103,7 @@ export class LoginComponent {
 
   checkCredentials(): User | undefined {
     for (const u of users) {
-      if (u.email === this.email && u.password === this.password) {
+      if (u.email === this.email3 && u.password === this.password3) {
         return u;
       }
     }
@@ -112,6 +122,10 @@ export class LoginComponent {
   }
 
   redirectToSignup(){this.switchForm = false;
+      this.signup.reset();
+      setTimeout(() => {
+        this.cdr.detectChanges(); // Odloži osvežavanje da bi se forma sigurno učitala
+      },100);
     }
 
 }

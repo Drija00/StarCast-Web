@@ -13,8 +13,8 @@
         <span></span>
     </section>
 
-    @if(switchForm){
-        <h1 id="naslov">STAR CAST</h1>
+    <div *ngIf="switchForm; else elseBlock "> 
+      <h1 id="naslov">STAR CAST</h1>
 
         <div class="login-form">
             <h1 class = "login">
@@ -22,11 +22,11 @@
             </h1>
                 <mat-form-field class="login-input" appearance="outline">
                 <mat-label>Email</mat-label>
-                <input type="email" matInput [(ngModel)]="email" placeholder="Ex. pat@example.com">
+                <input type="email" matInput [(ngModel)]="email3" placeholder="Ex. pat@example.com">
                 </mat-form-field>
         
                 <mat-form-field class="login-input" appearance="outline">
-                    <input matInput [(ngModel)]="password" placeholder="Password" [type]="hide ? 'password' : 'text'" required>
+                    <input matInput [(ngModel)]="password3" placeholder="Password" [type]="hide ? 'password' : 'text'" required>
                     <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                     <mat-hint *ngIf="passwordInput?.value">Enter your password</mat-hint>
                 </mat-form-field>
@@ -37,13 +37,13 @@
         
             <button mat-button (click) = "redirectToHome()" class="login-button">Log in</button>
         </div>
-    }@else {
-        
-    <div class="register-form">
+    </div>
+    <ng-template #elseBlock>
+      <div class="register-form">
         <h1 class="login">
           <label>Sign up</label>
         </h1>
-        <form *ngIf="signup" [formGroup]="signup">
+        <form style="display: flex; flex-direction: column; justify-content: center; align-items: center;" *ngIf="!switchForm" [formGroup]="signup">
           <div class="inputs">
             <div class="section">
               <mat-form-field class="register-input" appearance="outline">
@@ -99,7 +99,7 @@
           <button mat-button (click)="redirectToLogin()" class="login-button">Register</button>
         </form>
       </div>
-    }
+    </ng-template>
 
     
 
