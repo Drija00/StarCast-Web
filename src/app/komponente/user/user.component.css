@@ -61,7 +61,13 @@ body {
 
 .postUserProfile{
   background-size: cover; 
-  background-position: center;
+  background-position: center;    
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+  object-fit: cover;
 }
 
 .datewrapper{

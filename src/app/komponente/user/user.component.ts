@@ -27,6 +27,7 @@ import { User } from '../../users';
 import { DataService } from '../../servisi/data.service';
 import { Star, stars } from '../../posts';
 import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user',
@@ -60,6 +61,7 @@ export class UserComponent  implements OnInit{
   imageString: string | null = null;
   user: any;
   post:boolean = true;
+  starBasePath = environment.apiHostStar;
   icons = { cilList, cilCalendar };
   
   
@@ -68,6 +70,7 @@ export class UserComponent  implements OnInit{
   expandedImages: string[] = [];
   currentImageIndex: number = 0;
   currentImageSet: string[] = [];
+  imageFiles?: File[];
 
   constructor(private router: Router,
     private route: ActivatedRoute , private cdr: ChangeDetectorRef, private dataService: DataService,private sanitizer: DomSanitizer){}
@@ -82,16 +85,21 @@ export class UserComponent  implements OnInit{
       this.redirectToLogin();
       return;
     }
-    this.user = this.dataService.getUser(userId);
-
-    
-    console.log(this.user)
     const userJson = localStorage.getItem('logged_user');
     if (userJson) {
       this.loggedUser = JSON.parse(userJson);
       console.log(this.loggedUser);
     }
-    this.post = userId === this.loggedUser?.userId;
+    console.log("Da li je ulogovani korisnik na strani: "+ (userId === this.loggedUser?.userId))
+    if(userId === this.loggedUser?.userId){
+      this.user = this.loggedUser;
+      this.post = true;
+    }else{
+      this.user = this.dataService.getUser(userId);
+
+      console.log(this.user)
+      this.post = false;
+    }
 
     console.log(this.post)
     
@@ -187,9 +195,11 @@ export class UserComponent  implements OnInit{
       }
     }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
-  }
+    redirectToLogin() {
+      this.dataService.logout(this.loggedUser!.userId).subscribe(
+        this.router.navigate(['/login'])
+      )
+    }
 
   backToHome(){
     console.log("HOME")
@@ -205,32 +215,6 @@ export class UserComponent  implements OnInit{
     this.scrollDiv.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onFileSelected(event: Event): void {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput?.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);  // Convert FileList to an array
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
-  
-      if (invalidFiles.length > 0) {
-        alert('Invalid file type(s). Please select only JPEG or PNG images.');
-        return;
-      }
-  
-      // Reset previews
-      this.previewImages = [];  // If you want to show previews for multiple images
-      this.imageStrings = [];   // Store data URLs of the images
-  
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.previewImages.push(reader.result as string);  // Add each preview image URL
-          this.imageStrings.push(reader.result as string);   // Store the base64 image data
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  }
   
   onBackgroundButtonSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
@@ -246,7 +230,7 @@ export class UserComponent  implements OnInit{
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => { // Store the base64 image data
-          this.user.background_img = reader.result as string;
+          this.user.backgroundImage = reader.result as string;
         };
         reader.readAsDataURL(file);
       });
@@ -268,7 +252,7 @@ export class UserComponent  implements OnInit{
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => { // Store the base64 image data
-          this.user.profile_img = reader.result as string;
+          this.user.profileImage = reader.result as string;
         };
         reader.readAsDataURL(file);
       });
@@ -289,30 +273,72 @@ export class UserComponent  implements OnInit{
   }
 
   formatDate(date:Date):String {
-    const month = date.toLocaleString('en-US', { month: 'long' });
-    const year = date.getFullYear();
+    const parsedDate = new Date(date);
+    const month = parsedDate.toLocaleString('en-US', { month: 'long' });
+    const year = parsedDate.getFullYear();
 
     return `${month} ${year}`;
   }
 
-  postStar(textarea: HTMLTextAreaElement){
-    
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput?.files && fileInput.files.length > 0) {
+      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
+  
+      if (invalidFiles.length > 0) {
+        alert('Invalid file type(s). Please select only JPEG or PNG images.');
+        return;
+      }
+  
+      // Reset previews
+      this.previewImages = [];
+      this.imageFiles = files;  // If you want to show previews for multiple images
+      
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.previewImages.push(reader.result as string);  // Add each preview image URL
+        };
+        reader.readAsDataURL(file);
+      });
+      console.log(this.imageFiles)
+    }
+  }
+  postStar(textarea: HTMLTextAreaElement) {
     const newStar = {
-      starId: "",
-      content_imgs: [...this.previewImages],
+      user_id: this.loggedUser?.userId || '',
       content: textarea.value,
-      user: this.loggedUser!,
-      timestamp: new Date().toISOString(),
     };
-    console.log('Posting star:', newStar);
-    this.previewImage = null;
-    this.imageString = null;
-    this.stars.unshift(newStar);
-    textarea.value = "";  
-    this.clearImage()
-    this.cdr.detectChanges();
-    console.log(this.stars)
-
+  
+    const files = this.imageFiles ? Array.from(this.imageFiles) : [];
+    console.log(files)
+    
+  
+    this.dataService.uploadStar(newStar, files).subscribe({
+      next: (response) => {
+        console.log('Star posted successfully:', response);
+        this.previewImages = [];
+        this.previewImage = null;
+        this.clearImage()
+        this.imageFiles = [];
+        textarea.value = '';
+        //potrebno na beku vratiti kreiranu objavu sa id-em kako bi se odmah na feed postavila
+      /*const newStar1 = {
+        starId: "",
+        content_imgs: [...this.previewImages],
+        content: textarea.value,
+        user: this.loggedUser!,
+        timestamp: new Date().toISOString(),
+      };*/
+        this.stars.unshift(response);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error posting star:', err);
+      },
+    });
   }
   onInput(textarea: HTMLTextAreaElement) {
     textarea.style.height = 'auto';

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+/* import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {FormControl, Validators, FormsModule, ReactiveFormsModule, FormBuilder} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -61,7 +61,7 @@ export class RegisterComponent implements OnInit{
       firstname: formValues.firstname,
       lastname: formValues.lastname,
       description: "",
-      date: new Date(),
+      join: new Date(),
       email: formValues.email,
       password: formValues.password,
       active: true,
@@ -80,3 +80,4 @@ export class RegisterComponent implements OnInit{
     }
   }
 }
+ */

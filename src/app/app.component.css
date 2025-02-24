@@ -16,11 +16,6 @@ body {
     border-bottom: 1px solid rgb(28, 29, 32);
 }
 
-
-.search-form-field .mat-mdc-form-field-subscript-wrapper{
-    display: none;
-  }
-
 #pozadina{
     top: 0;
     left: 0;

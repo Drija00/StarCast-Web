@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { environment } from '../../../environments/environment';
+
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -59,13 +61,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   loggedUser: User | undefined;
   private observer!: IntersectionObserver;
   previewImage: string | null = null;
-  imageString: string | null = null;
-
   expandedImages: string[] = [];
   currentImageIndex: number = 0;
   currentImageSet: string[] = [];
   previewImages: string[] = [];
   imageStrings: string[] = [];
+  imageFiles?: File[];
+  starBasePath = environment.apiHostStar;
 
 
   constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService) {}
@@ -86,7 +88,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
   clearImage(): void {
     this.previewImages = [];
-    this.imageStrings = [];
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -113,7 +114,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   redirectToLogin() {
-    this.router.navigate(['/login']);
+    this.dataService.logout(this.loggedUser!.userId).subscribe(
+      this.router.navigate(['/login'])
+    )
   }
 
   backToHome(){
@@ -200,8 +203,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
     this.searchedUsers = users.filter(user =>
       user.username.toLowerCase().includes(searchValue) ||
-      user.firstname.toLowerCase().includes(searchValue) ||
-      user.lastname.toLowerCase().includes(searchValue)
+      user.firstName.toLowerCase().includes(searchValue) ||
+      user.lastName.toLowerCase().includes(searchValue)
     );
   
     this.showFeed = false;
@@ -237,22 +240,53 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
   
       // Reset previews
-      this.previewImages = [];  // If you want to show previews for multiple images
-      this.imageStrings = [];   // Store data URLs of the images
+      this.previewImages = [];
+      this.imageFiles = files;  // If you want to show previews for multiple images
   
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => {
           this.previewImages.push(reader.result as string);  // Add each preview image URL
-          this.imageStrings.push(reader.result as string);   // Store the base64 image data
         };
         reader.readAsDataURL(file);
       });
+      console.log(this.previewImages)
     }
   }
+  postStar(textarea: HTMLTextAreaElement) {
+    const newStar = {
+      user_id: this.loggedUser?.userId || '',
+      content: textarea.value,
+    };
   
+    const files = this.imageFiles ? Array.from(this.imageFiles) : [];
+  
+    this.dataService.uploadStar(newStar, files).subscribe({
+      next: (response) => {
+        console.log('Star posted successfully:', response);
+        this.previewImages = [];
+        this.previewImage = null;
+        this.clearImage()
+        this.imageFiles = [];
+        textarea.value = '';
+        //potrebno na beku vratiti kreiranu objavu sa id-em kako bi se odmah na feed postavila
+      /*const newStar1 = {
+        starId: "",
+        content_imgs: [...this.previewImages],
+        content: textarea.value,
+        user: this.loggedUser!,
+        timestamp: new Date().toISOString(),
+      };*/
+        this.stars.unshift(response);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error posting star:', err);
+      },
+    });
+  }
 
-  postStar(textarea: HTMLTextAreaElement){
+  /*postStar(textarea: HTMLTextAreaElement){
     const newStar = {
       starId: "",
       content_imgs: [...this.previewImages],
@@ -262,11 +296,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     };
     console.log('Posting star:', newStar);
     this.previewImage = null;
-    this.imageString = null;
     this.clearImage()
     this.stars.unshift(newStar);
     textarea.value = "";  
     this.cdr.detectChanges();
     console.log(this.stars)
-  }
+  }*/
 }

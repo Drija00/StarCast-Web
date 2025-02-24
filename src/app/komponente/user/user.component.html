@@ -25,14 +25,14 @@
 
             <div class="profile">
                 <div id="backgroundDiv" 
-                    [ngStyle]="{'background-image': 'url(' + user?.background_img + ')'}" 
-                    (click)="expandImages([user?.background_img!], 0)" 
+                    [ngStyle]="{'background-image': 'url(' + (user?.backgroundImage ? user?.backgroundImage : 'Images/background.jpg') + ')'}" 
+                    (click)="expandImages([user?.backgroundImage!], 0)" 
                     class="background-div">
 
                     <div 
                             mat-card-avatar 
-                            [style.background-image]="'url(' + user?.profile_img + ')'" 
-                            (click)="expandImages([user?.profile_img],0,$event)"
+                            [style.background-image]="'url(' + (user?.profileImage ? user?.profileImage : 'Images/profile.jpg') + ')'"
+                            (click)="expandImages([user?.profileImage],0,$event)"
                             class="postUserProfile profileBanner">
                             <label class="profileButton" *ngIf="post" (click)="$event.stopPropagation()">
                                 <mat-icon>add_circle</mat-icon>
@@ -54,21 +54,21 @@
                             <div style="display: flex; flex-direction: row;">
                                 <div class="columnflexdivs">
                                     <p class="followers">Followers</p>
-                                    <p class="followers-count">65</p>
+                                    <p class="followers-count">{{user?.followers?.length}}</p>
                                 </div>
                                 <div class="columnflexdivs">
                                     <p class="followers">Followings</p>
-                                    <p class="followers-count">75</p>
+                                    <p class="followers-count">{{user?.following?.length}}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="profiletext">
-                            <h1>{{ user?.firstname }} {{ user?.lastname }}</h1>
+                            <h1>{{ user?.firstName }} {{ user?.lastName }}</h1>
                             <h3>&#64;{{user?.username}}</h3>
                             <p class="profileDesc" > {{user?.description}}</p>
                             <div class="datewrapper">
                                 <svg [cIcon]="icons.cilCalendar" id="calendar"></svg>
-                                <p class="joined">Joined {{formatDate(user?.date)}}</p>
+                                <p class="joined">Joined {{formatDate(user?.joinDate)}}</p>
                             </div>
                         </div>
                         <span style="flex: 1 1;"></span>
@@ -85,14 +85,13 @@
                         
             
             </div>
-
             <div class="postinput" *ngIf="post">
                 
                 <div id="logoinput">
                     <div 
-                        mat-card-avatar 
-                        [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
-                        class="postUserProfile">
+                            mat-card-avatar 
+                            [style.background-image]="'url(' + (user?.profileImage ? user?.profileImage : 'Images/profile.jpg') + ')'"
+                            class="postUserProfile">
                     </div>
                     <form class="example-form">
                         <mat-form-field class="example-full-width">
@@ -125,7 +124,7 @@
                 <div class="carddiv">
                     <div 
                         mat-card-avatar 
-                        [style.background-image]="'url(' + star.user.profile_img + ')'" 
+                        [style.background-image]="'url(' + star.user.profileImage + ')'" 
                         style="background-size: cover; background-position: center; ">
                     </div>
                     <mat-card-title class="title">{{ user?.firstname }} {{ user?.lastname }}</mat-card-title>
@@ -137,7 +136,7 @@
                         {{star.content}}
                     </p>
                 </mat-card-content>
-                <ng-container *ngIf="star?.content_imgs">
+                <ng-container *ngIf="star?.images">
                     <!--<div id="onlyImageDiv" *ngIf="star.content_imgs.length === 1">
                         <img id="onlyImage"
                             [src]="star.content_imgs[0]" 
@@ -146,17 +145,17 @@
                     </div>
                     <div *ngIf="star.content_imgs.length !== 1">-->
                         <mat-grid-list cols="2" rowHeight="2:1">
-                            <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
-                            <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                            <mat-grid-tile *ngFor="let image of star.images.slice(0, 1)">
+                            <img [src]="starBasePath +image" (click)="expandImages(star.images, star.images.indexOf(image))" alt="Gallery Image" />
                             </mat-grid-tile>
                         
-                            <mat-grid-tile *ngIf="star.content_imgs.length === 2">
-                            <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
+                            <mat-grid-tile *ngIf="star.images.length === 2">
+                            <img [src]="starBasePath +star.images[1]" (click)="expandImages(star.images, 1)" alt="Gallery Image" />
                             </mat-grid-tile>
                         
-                            <mat-grid-tile *ngIf="star.content_imgs.length > 2">
-                            <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
-                                <span>+{{ star.content_imgs.length - 1 }} more</span>
+                            <mat-grid-tile *ngIf="star.images.length > 2">
+                            <div class="overlay" (click)="expandImages(star.images, 1)">
+                                <span>+{{ star.images.length - 1 }} more</span>
                             </div>
                             </mat-grid-tile>
                         </mat-grid-list>
@@ -179,7 +178,7 @@
     <div class="image-modal" *ngIf="expandedImages.length > 0" (click)="closeImage()">
         <div class="image-container" (click)="$event.stopPropagation()">
           <button class="prev" *ngIf="currentImageIndex > 0" (click)="prevImage($event)">&#10094;</button>
-          <img [src]="expandedImages[currentImageIndex]" alt="Expanded image" />
+          <img [src]="starBasePath + expandedImages[currentImageIndex]" alt="Expanded image" />
           <button class="next" *ngIf="currentImageIndex < expandedImages.length - 1" (click)="nextImage($event)">&#10095;</button>
         </div>
     </div>

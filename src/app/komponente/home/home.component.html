@@ -16,10 +16,11 @@
           </mat-form-field>
           
         <span class="example-spacer"></span>
-        <div mat-card-avatar 
-            [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
-            class="navprofile"
-            (click)="redirectToUser(loggedUser?.userId!)">
+        <div mat-card-avatar
+        [style.background-image]="'url(' + (loggedUser?.profileImage ? loggedUser?.profileImage : 'Images/profile.jpg') + ')'"
+        class="navprofile"
+        (click)="redirectToUser(loggedUser?.userId!)">
+
         </div>
         <button mat-icon-button class="example-icon favorite-icon" matTooltip="Logout" aria-label="Example icon-button with heart icon" (click)="redirectToLogin()">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
@@ -39,7 +40,7 @@
                     <div id="logoinput">
                         <div 
                             mat-card-avatar 
-                            [style.background-image]="'url(' + loggedUser?.profile_img + ')'" 
+                            [style.background-image]="'url(' + (loggedUser?.profileImage ? loggedUser?.profileImage : 'Images/profile.jpg') + ')'"
                             class="postUserProfile"
                             (click)="redirectToUser(loggedUser?.userId!)">
                         </div>
@@ -73,20 +74,20 @@
                     <mat-card-header>
                     <div class="carddiv">
                         <div 
-                            mat-card-avatar 
-                            [style.background-image]="'url(' + star.user.profile_img + ')'" 
+                            mat-card-avatar  
+                            [style.background-image]="'url(' + (star?.user?.profileImage ? star?.user?.profileImage : 'Images/profile.jpg') + ')'"
                             style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(star.user.userId)">
                         </div>
-                        <mat-card-title class="title" (click)="redirectToUser(star.user.userId)">{{ star?.user?.firstname }} {{ star?.user?.lastname }}</mat-card-title>
+                        <mat-card-title class="title" (click)="redirectToUser(star.user.userId)">{{ star?.user?.firstName }} {{ star?.user?.lastName }}</mat-card-title>
                     </div>
-                    <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
+                    <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star?.timestamp}}</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content style="margin-left: 10px; margin-right: 10px;">
                         <p>
                             {{star.content}}
                         </p>
                     </mat-card-content>
-                    <ng-container *ngIf="star?.content_imgs">
+                    <ng-container *ngIf="star?.images">
                         <!--<div id="onlyImageDiv" *ngIf="star.content_imgs.length === 1">
                             <img id="onlyImage"
                                 [src]="star.content_imgs[0]" 
@@ -95,17 +96,17 @@
                         </div>
                         <div *ngIf="star.content_imgs.length !== 1">-->
                             <mat-grid-list cols="2" rowHeight="2:1">
-                                <mat-grid-tile *ngFor="let image of star.content_imgs.slice(0, 1)">
-                                <img [src]="image" (click)="expandImages(star.content_imgs, star.content_imgs.indexOf(image))" alt="Gallery Image" />
+                                <mat-grid-tile *ngFor="let image of star.images.slice(0, 1)">
+                                <img [src]="starBasePath + image"  (click)="expandImages(star.images, star.images.indexOf(image))" alt="Gallery Image" />
                                 </mat-grid-tile>
                             
-                                <mat-grid-tile *ngIf="star.content_imgs.length === 2">
-                                <img [src]="star.content_imgs[1]" (click)="expandImages(star.content_imgs, 1)" alt="Gallery Image" />
+                                <mat-grid-tile *ngIf="star.images.length === 2">
+                                <img [src]="starBasePath +star.images[1]" (click)="expandImages(star.images, 1)" alt="Gallery Image" />
                                 </mat-grid-tile>
                             
-                                <mat-grid-tile *ngIf="star.content_imgs.length > 2">
-                                <div class="overlay" (click)="expandImages(star.content_imgs, 1)">
-                                    <span>+{{ star.content_imgs.length - 1 }} more</span>
+                                <mat-grid-tile *ngIf="star.images.length > 2">
+                                <div class="overlay" (click)="expandImages(star.images, 1)">
+                                    <span>+{{ star.images.length - 1 }} more</span>
                                 </div>
                                 </mat-grid-tile>
                             </mat-grid-list>
@@ -126,11 +127,11 @@
                     <mat-card-header id="usersearch">
                     <div class="carddiv">
                         <div 
-                            mat-card-avatar 
-                            [style.background-image]="'url(' + user.profile_img + ')'" 
+                            mat-card-avatar   
+                            [style.background-image]="'url(' + (user?.profileImage ? user?.profileImage : 'Images/profile.jpg') + ')'"
                             style="background-size: cover; background-position: center; cursor: pointer;" (click)="redirectToUser(user.userId)">
                         </div>
-                        <mat-card-title class="title1" (click)="redirectToUser(user.userId)">{{ user?.firstname }} {{ user?.lastname }}</mat-card-title>
+                        <mat-card-title class="title1" (click)="redirectToUser(user.userId)">{{ user?.firstName }} {{ user?.lastName }}</mat-card-title>
                     </div>
                     <h3 style="font-size: smaller; font-weight: lighter;">&#64;{{user?.username}}</h3>
                     </mat-card-header>
@@ -145,7 +146,7 @@
     <div class="image-modal" *ngIf="expandedImages.length > 0" (click)="closeImage()">
         <div class="image-container" (click)="$event.stopPropagation()">
           <button class="prev" *ngIf="currentImageIndex > 0" (click)="prevImage($event)">&#10094;</button>
-          <img [src]="expandedImages[currentImageIndex]" alt="Expanded image" />
+          <img [src]="starBasePath + expandedImages[currentImageIndex]" alt="Expanded image" />
           <button class="next" *ngIf="currentImageIndex < expandedImages.length - 1" (click)="nextImage($event)">&#10095;</button>
         </div>
     </div>
