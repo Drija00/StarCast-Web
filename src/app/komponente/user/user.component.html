@@ -25,13 +25,13 @@
 
             <div class="profile">
                 <div id="backgroundDiv" 
-                    [ngStyle]="{'background-image': 'url(' + (user?.backgroundImage ? user?.backgroundImage : 'Images/background.jpg') + ')'}" 
+                    [ngStyle]="{'background-image': backgroundImageStyle}" 
                     (click)="expandImages([user?.backgroundImage!], 0)" 
                     class="background-div">
 
                     <div 
                             mat-card-avatar 
-                            [style.background-image]="'url(' + (user?.profileImage ? user?.profileImage : 'Images/profile.jpg') + ')'"
+                            [style.background-image]="getProfileImage(user)"
                             (click)="expandImages([user?.profileImage],0,$event)"
                             class="postUserProfile profileBanner">
                             <label class="profileButton" *ngIf="post" (click)="$event.stopPropagation()">
@@ -40,12 +40,11 @@
                             </label>
                             <!--<p id="profileChangeLink" (click)="onProfileButtonSelected($event)">Edit profile picture</p> --ovo je bilo zakomentarisano-->
                         </div>
-                    <label class="backgroundButton" *ngIf="post">
+                    <label class="backgroundButton" *ngIf="post" (click)="$event.stopPropagation()">
                         <mat-icon>add_circle</mat-icon>
                         <input type="file" #fileInput  accept=".jpg, .jpeg, .png" (change)="onBackgroundButtonSelected($event)" style="display: none;">
                     </label>
                 </div>
-
                         
                     <div class="wrapper">
                         <div class="columnflexdivs">
@@ -54,33 +53,45 @@
                             <div style="display: flex; flex-direction: row;">
                                 <div class="columnflexdivs">
                                     <p class="followers">Followers</p>
-                                    <p class="followers-count">{{user?.followers?.length}}</p>
+                                    <p class="followers-count">{{user?.followers?.length  || 0}}</p>
                                 </div>
                                 <div class="columnflexdivs">
                                     <p class="followers">Followings</p>
-                                    <p class="followers-count">{{user?.following?.length}}</p>
+                                    <p class="followers-count">{{user?.following?.length || 0}}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="profiletext">
                             <h1>{{ user?.firstName }} {{ user?.lastName }}</h1>
                             <h3>&#64;{{user?.username}}</h3>
-                            <p class="profileDesc" > {{user?.description}}</p>
+                            <div style="display: flex; align-items: center;" class="joined">
+                                <mat-icon *ngIf="user?.userId===loggedUser?.userId" id="editDesc" (click)="openDialog()">edit</mat-icon>
+                                <span *ngIf="!user?.description && user?.userId===loggedUser?.userId" class="italic">
+                                    Add your description
+                                </span>
+                                <p *ngIf="user?.description" class="joined">
+                                  {{ user.description }}
+                                </p>
+                            </div>
+                                                          
                             <div class="datewrapper">
                                 <svg [cIcon]="icons.cilCalendar" id="calendar"></svg>
                                 <p class="joined">Joined {{formatDate(user?.joinDate)}}</p>
                             </div>
+
+                            <span *ngIf="user?.userId!==loggedUser?.userId" style="height: 20px;"></span>
                         </div>
                         <span style="flex: 1 1;"></span>
                         <div class="followDivButton">
                             <button 
                             mat-stroked-button 
                             id="followButton" 
-                            *ngIf="!post">
-                            {{ user?.active ? 'Unfollow' : 'Follow' }} <!-- Ovde treba setovati u odnosu da li prati korisnika ili ne, ukolniti da gleda po activu sluzi samo za mock-->
+                            (click)="changeFollowStatus()"
+                            *ngIf="!post"
+                            >
+                            {{ isfollowing() ? 'Unfollow' : 'Follow' }} <!-- Ovde treba setovati u odnosu da li prati korisnika ili ne, ukolniti da gleda po activu sluzi samo za mock-->
                             </button> 
                         </div>
-                        
                     </div>
                         
             
@@ -90,7 +101,7 @@
                 <div id="logoinput">
                     <div 
                             mat-card-avatar 
-                            [style.background-image]="'url(' + (user?.profileImage ? user?.profileImage : 'Images/profile.jpg') + ')'"
+                            [style.background-image]="getProfileImage(user)"
                             class="postUserProfile">
                     </div>
                     <form class="example-form">
@@ -124,10 +135,10 @@
                 <div class="carddiv">
                     <div 
                         mat-card-avatar 
-                        [style.background-image]="'url(' + star.user.profileImage + ')'" 
+                        [style.background-image]="getProfileImage(star?.user!)"
                         style="background-size: cover; background-position: center; ">
                     </div>
-                    <mat-card-title class="title">{{ user?.firstname }} {{ user?.lastname }}</mat-card-title>
+                    <mat-card-title class="title">{{ star?.user?.firstName }} {{ star?.user?.lastName }}</mat-card-title>
                 </div>
                 <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
                 </mat-card-header>
@@ -164,10 +175,27 @@
                   </ng-container>
                   
                   
-                <mat-card-actions>
-                <button mat-button>LIKE</button>
-                <button mat-button>SHARE</button>
-                </mat-card-actions>
+                  <mat-card-actions>
+                    <div style="display: flex; flex-direction: row; align-items: center; margin-left: 10px;">
+                        @if(didILikeThePost(star.userLikes)) {
+                            <button mat-button (click)="unlikePost(loggedUser!.userId, star)">
+                                <span style="display: flex; align-items: center; color: rgb(131, 185, 255);">
+                                    <mat-icon style="color: rgb(13, 0, 255);">thumb_up</mat-icon>
+                                    <p style="margin-left: 10px; margin-right: 5px; margin-bottom: 0;">{{ star.userLikes.length || 0 }}</p>
+                                </span>
+                            </button>
+                        } @else {
+                            <button mat-button (click)="likePost(loggedUser!.userId, star)">
+                                <span style="display: flex; align-items: center; color: rgb(131, 185, 255);">
+                                    <mat-icon style="color: rgb(131, 185, 255);">thumb_up</mat-icon>
+                                    <p style="margin-left: 10px; margin-right: 5px; margin-bottom: 0;">{{ star.userLikes.length || 0 }}</p>
+                                </span>
+                            </button>
+                        }
+                    </div>
+                    
+                    <button mat-button style="min-width: 50px; color: rgb(131, 185, 255);"><mat-icon >share</mat-icon></button>
+                    </mat-card-actions>
             </mat-card>
             <div #scrollMarker id="scrollMarker"></div>
         </div>

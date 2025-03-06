@@ -23,9 +23,9 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { User, users } from '../../users';
+import { User, UserFollowing, users } from '../../users';
 import { DataService } from '../../servisi/data.service';
-import { Star, stars } from '../../posts';
+import { Star } from '../../posts';
 import { filter } from 'rxjs';
 
 @Component({
@@ -56,6 +56,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   value = '';
   offset = 0;
   limit = 6;
+  offsetFilter=0;
   searchedUsers:any[]=[];
   showTopButton = false;
   loggedUser: User | undefined;
@@ -68,6 +69,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   imageStrings: string[] = [];
   imageFiles?: File[];
   starBasePath = environment.apiHostStar;
+  userBasePath = environment.apiHostUser;
+  profileImage:string = "";
 
 
   constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService) {}
@@ -114,8 +117,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   redirectToLogin() {
-    this.dataService.logout(this.loggedUser!.userId).subscribe(
-      this.router.navigate(['/login'])
+    this.dataService.logout(this.loggedUser!.userId).subscribe(()=>{
+      localStorage.removeItem('logged_user');
+      this.router.navigate(['/login']);
+    }
     )
   }
 
@@ -136,11 +141,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       
       const userJson = localStorage.getItem('logged_user');
-      this.loadStars();
       if (userJson) {
         this.loggedUser = JSON.parse(userJson);
+        if(this.loggedUser?.profileImage) this.profileImage = this.loggedUser.profileImage
         console.log(this.loggedUser);
       }
+      this.loadStars();
       console.log(this.scrollDiv)
       if (this.scrollDiv) {
         this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
@@ -171,19 +177,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.observer.observe(this.scrollMarker.nativeElement);
     }
   
-  loadStars(): void {
+  loadStars() {
     if (this.loading) {
       console.warn('Učitavanje je već u toku. Preskačem poziv loadStars.');
       return;
     }
   
     this.loading = true;
-  
-    this.dataService.getStars(this.offset, this.limit).subscribe({
+    this.dataService.getStars(this.loggedUser!.userId,this.offset, this.limit).subscribe({
       next: (data) => {
-        if (data.length > 0) {
-          this.stars = [...this.stars, ...data];
-          this.offset += data.length;
+        console.log(data)
+        if (data.items.length > 0) {
+          this.stars = [...this.stars, ...data.items];
+          this.offset++;
+          console.log(this.offset)
+          console.log(this.limit)
           console.log(this.stars)
         } else {
           console.log('Diskonektujem posmatrača.');
@@ -201,14 +209,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
   search() {
     const searchValue = this.value.toLowerCase().trim();
   
-    this.searchedUsers = users.filter(user =>
+    this.dataService.getFilteredUsers(searchValue,this.offsetFilter,this.limit).subscribe(x=>{
+      this.searchedUsers = x.items
+      console.log(x.items)
+      this.showFeed = false;
+      this.value = '';
+    })
+
+    /*this.searchedUsers = users.filter(user =>
       user.username.toLowerCase().includes(searchValue) ||
       user.firstName.toLowerCase().includes(searchValue) ||
       user.lastName.toLowerCase().includes(searchValue)
-    );
+    );*/
   
-    this.showFeed = false;
-    this.value = '';
   }
   
 
@@ -277,6 +290,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         user: this.loggedUser!,
         timestamp: new Date().toISOString(),
       };*/
+        console.log(response)
         this.stars.unshift(response);
         this.cdr.detectChanges();
       },
@@ -285,6 +299,58 @@ export class HomeComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
+  likePost(userId:string,star:Star){
+    this.dataService.likePost(userId,star.starId).subscribe(x=>{
+      let u : UserFollowing = {
+        firstName:this.loggedUser!.firstName,
+        lastName:this.loggedUser!.lastName,
+        userId:userId,
+        username:this.loggedUser!.username,
+        profileImage:this.loggedUser!.profileImage
+      }
+      star.userLikes.unshift(u)
+      console.log("LIKE");
+    })
+      
+  }
+
+  unlikePost(userId:string,star:Star){
+    this.dataService.unlikePost(userId,star.starId).subscribe(x=>{
+      star.userLikes = star.userLikes.filter(x=>x.userId!==userId)
+      console.log("UNLIKE")
+    })
+  }
+
+  didILikeThePost(likes:any[]):boolean{
+    if(likes.some(x=>x.userId === this.loggedUser?.userId)) return true;
+
+    return false;
+  }
+
+  get profileImageStyle(): string {
+    if (this.loggedUser?.profileImage) {
+        return `url('${this.userBasePath}${this.loggedUser.profileImage}')`;
+    }
+    return `url('Images/profile.jpg')`; 
+}
+get rofileImageStyle(): string {
+  if (this.loggedUser?.profileImage) {
+      return `url('${this.userBasePath}${this.loggedUser.profileImage}')`;
+  }
+  return `url('Images/profile.jpg')`; 
+}
+getProfileImage(user: UserFollowing): string {
+  const imageUrl = user?.profileImage
+      ? `${this.userBasePath}${user?.profileImage}`
+      : 'Images/profile.jpg';
+
+  return `url('${imageUrl}')`;
+}
+
+
+
+
 
   /*postStar(textarea: HTMLTextAreaElement){
     const newStar = {

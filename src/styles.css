@@ -37,4 +37,3 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .search-form-field .mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-flex .mat-mdc-form-field-icon-suffix .mat-mdc-icon-button .mat-mdc-button-persistent-ripple{
   display: none;
 }
-

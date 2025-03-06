@@ -18,10 +18,23 @@ export interface UserFollowing{
     username:string;
     firstName:string;
     lastName:string;
+    profileImage:string;
+}
+export interface SetProfileResponse{
+    profileImage:string;
+}
+export interface SetBackgroundImage{
+    backgroundImage:string;
+}
+export interface SetDescription{
+    description:string;
+}
+export interface Users{
+    items:User[]
 }
 
 export const users:User[] = [
-    {
+    /*{
         userId: "1ed32ee2-59d4-44e1-b1e4-234901aa51f2",
         username: "ivanri",
         email: "ivanri@telekom.rs",
@@ -65,5 +78,5 @@ export const users:User[] = [
         description: "UA GROBARI",
         following:[],
         followers:[]
-    }
+    }*/
 ]

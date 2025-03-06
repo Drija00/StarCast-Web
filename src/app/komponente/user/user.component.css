@@ -58,6 +58,12 @@ body {
   width: 30px;
   margin-right: 10px;
 }
+.mat-mdc-card-subtitle{
+  margin-left: 10px;
+  color: rgb(126, 126, 126);
+  cursor: pointer;
+
+}
 
 .postUserProfile{
   background-size: cover; 
@@ -173,12 +179,16 @@ p{
   color: white;
 }
 
-.joined{
+#editDesc{
+  height: 25px;
+  width: 25px;
+  margin-top: 4px;
+  font-weight: bolder;
   color: rgb(126, 126, 126);
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 200;
+}
+#editDesc:hover{
   
-  font-size: 1.5vh;
+  color: rgb(32, 51, 136);
 }
 
 .textdiv{
@@ -413,6 +423,8 @@ section {
     color: rgb(255, 255, 255);
     border: none;
     border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.6); /* Add background to make it visible */
+    border-radius: 50%;
     opacity: 0.8;
     transition: opacity 0.2s ease-in-out;
     cursor: pointer;
@@ -427,6 +439,20 @@ section {
   
   .remove-btn:hover {
     background-color: darkred;
+  }
+  .italic {
+    font-style: italic;
+    font-size: smaller;
+    color: gray;
+    margin-left: 5px;
+    padding-top: 5px;
+  }
+  .joined{
+    color: rgb(126, 126, 126);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 200;
+    
+    font-size: 1.5vh;
   }
   
   .previewImage{

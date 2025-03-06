@@ -1,0 +1,13 @@
+<mat-dialog-content>
+  <p>Change your description:</p>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Description</mat-label>
+    <input matInput [(ngModel)]="description" maxlength="60" />
+    <mat-hint align="end">{{ description().length }}/60</mat-hint>
+  </mat-form-field>  
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="description()" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>
+

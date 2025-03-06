@@ -1,15 +1,21 @@
 import { User, UserFollowing } from "./users"
 
+export interface Stars{
+  items:Star[],
+  totalItems:number
+}
+
 export interface Star {
         starId: string,
         images: string[],
         content: string,
-        user: User,
+        user: UserFollowing,
         timestamp: string,
         userLikes: UserFollowing[]
 }
 
-export const stars:Star[] = [
+
+/*export const stars:Star[] = [
     {
         userLikes:[],
         starId: "asd89ds0-0s90--9das-b1e4-234901aa51f2",
@@ -532,4 +538,4 @@ export const stars:Star[] = [
         timestamp: "2024-12-26 12:15:22",
       }
 
-]
+]*/

@@ -18,16 +18,20 @@ import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { User } from '../../users';
+import { User, UserFollowing } from '../../users';
 import { DataService } from '../../servisi/data.service';
-import { Star, stars } from '../../posts';
+import { Star } from '../../posts';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-user',
@@ -62,8 +66,11 @@ export class UserComponent  implements OnInit{
   user: any;
   post:boolean = true;
   starBasePath = environment.apiHostStar;
+  userBasePath = environment.apiHostUser;
   icons = { cilList, cilCalendar };
-  
+  userToShow: User | undefined;
+  readonly description = signal('');
+  readonly dialog = inject(MatDialog);
   
   previewImages: string[] = [];
   imageStrings: string[] = [];
@@ -94,11 +101,15 @@ export class UserComponent  implements OnInit{
     if(userId === this.loggedUser?.userId){
       this.user = this.loggedUser;
       this.post = true;
+      console.log("NA PROFILU ULOGOVANOG")
     }else{
-      this.user = this.dataService.getUser(userId);
+      this.dataService.getUser(userId).subscribe(x=>{
+        this.user=x
+        console.log(x)
+        console.log(this.user)
+        this.post = false;
+      });
 
-      console.log(this.user)
-      this.post = false;
     }
 
     console.log(this.post)
@@ -142,19 +153,21 @@ export class UserComponent  implements OnInit{
     }
     
 
-    loadStars(starId:string): void {
+    loadStars(userId:string) {
       if (this.loading) {
         console.warn('Učitavanje je već u toku. Preskačem poziv loadStars.');
         return;
       }
     
       this.loading = true;
-    
-      this.dataService.getUserStars(starId,this.offset, this.limit).subscribe({
+      this.dataService.getUserStars(userId,this.offset, this.limit).subscribe({
         next: (data) => {
-          if (data.length > 0) {
-            this.stars = [...this.stars, ...data];
-            this.offset += data.length;
+          console.log(data)
+          if (data.items.length > 0) {
+            this.stars = [...this.stars, ...data.items];
+            this.offset++;
+            console.log(this.offset)
+            console.log(this.limit)
             console.log(this.stars)
           } else {
             console.log('Diskonektujem posmatrača.');
@@ -196,8 +209,10 @@ export class UserComponent  implements OnInit{
     }
 
     redirectToLogin() {
-      this.dataService.logout(this.loggedUser!.userId).subscribe(
-        this.router.navigate(['/login'])
+      this.dataService.logout(this.loggedUser!.userId).subscribe(()=>{
+        localStorage.removeItem('logged_user');
+        this.router.navigate(['/login']);
+      }
       )
     }
 
@@ -230,7 +245,15 @@ export class UserComponent  implements OnInit{
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => { // Store the base64 image data
-          this.user.backgroundImage = reader.result as string;
+          this.dataService.setBackgroundImage(this.loggedUser!.userId,file).subscribe(x=>{
+            console.log('USPESNA PROMENA')
+            console.log(x)
+            this.user.backgroundImage = x.backgroundImage;
+            this.loggedUser!.backgroundImage = x.backgroundImage;
+            console.log(this.user.backgroundImage)
+            console.log(this.loggedUser)
+            localStorage.setItem('logged_user', JSON.stringify(this.loggedUser));
+          })
         };
         reader.readAsDataURL(file);
       });
@@ -252,7 +275,12 @@ export class UserComponent  implements OnInit{
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => { // Store the base64 image data
-          this.user.profileImage = reader.result as string;
+          this.dataService.setProfileImage(this.loggedUser!.userId,file).subscribe(x=>{
+            console.log('USPESNA PROMENA')
+            this.user.profileImage = x.profileImage
+            this.loggedUser!.profileImage = x.profileImage
+            localStorage.setItem('logged_user', JSON.stringify(this.loggedUser));
+          })
         };
         reader.readAsDataURL(file);
       });
@@ -345,4 +373,113 @@ export class UserComponent  implements OnInit{
     textarea.style.height = `${textarea.scrollHeight}px`;
   }
 
+  likePost(userId:string,star:Star){
+      this.dataService.likePost(userId,star.starId).subscribe(x=>{
+        let u : UserFollowing = {
+          firstName:this.loggedUser!.firstName,
+          lastName:this.loggedUser!.lastName,
+          userId:userId,
+          username:this.loggedUser!.username,
+          profileImage:this.loggedUser!.profileImage
+        }
+        star.userLikes.unshift(u)
+        console.log("LIKE");
+      })
+        
+    }
+  
+    unlikePost(userId:string,star:Star){
+      star.userLikes = star.userLikes.filter(x=>x.userId!==userId)
+      console.log("UNLIKE")
+    }
+  
+    didILikeThePost(likes:any[]):boolean{
+      if(likes.some(x=>x.userId === this.loggedUser?.userId)) return true;
+  
+      return false;
+    }
+
+    get profileImageStyle(): string {
+      if (this.user?.profileImage) {
+          return `url('${this.userBasePath}${this.user.profileImage}')`;
+      }
+      return `url('Images/profile.jpg')`; 
+    }
+    get backgroundImageStyle(): string {
+      console.log(this.user)
+      if (this.user?.backgroundImage) {
+          return `url('${this.userBasePath}${this.user.backgroundImage}')`;
+      }
+      return `url('Images/background.jpg')`; 
+    }
+
+  getProfileImage(user: UserFollowing): string {
+    //console.log("User in getProfileImage:", user); // Provera ulaznog objekta
+  
+    const imageUrl = user?.profileImage
+        ? `${this.userBasePath}${user?.profileImage}`
+        : 'Images/profile.jpg';
+  
+    //console.log('Final Image URL:', imageUrl); // Provera rezultujuće putanje
+  
+    return `url('${imageUrl}')`;
+  }
+
+  getBackgroundImage(user: UserFollowing): string {
+    //console.log("User in getProfileImage:", user); // Provera ulaznog objekta
+  
+    const imageUrl = user?.profileImage
+        ? `${this.userBasePath}${user?.profileImage}`
+        : 'Images/profile.jpg';
+  
+    //console.log('Final Image URL:', imageUrl); // Provera rezultujuće putanje
+  
+    return `url('${imageUrl}')`;
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {description: this.description()},
+      width: '10000px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed ', result );
+      if (result !== undefined) {
+        this.description.set(result);
+        this.dataService.setDescription(this.user.userId,result).subscribe(x=>{
+          this.user.description = x.description;
+          this.loggedUser!.description = x.description
+          localStorage.setItem('logged_user', JSON.stringify(this.loggedUser));
+        })
+      }
+    });
+  }
+
+  isfollowing():boolean{
+    for(let x of this.loggedUser?.following!){
+      if(x.userId===this.user.userId) return true;
+    }
+    return false;
+  }
+
+  changeFollowStatus(){
+    if(this.isfollowing()){
+      this.dataService.unfollow(this.loggedUser!.userId, this.user!.username).subscribe(console.log('Uspesno'))
+      console.log(this.user.userId)
+      this.loggedUser!.following = this.loggedUser!.following.filter(x => 
+      {
+        console.log(x.userId )
+        x.userId !== this.user!.userId
+      });
+      localStorage.setItem('logged_user', JSON.stringify(this.loggedUser));
+      console.log(this.loggedUser)
+    }else{
+      this.dataService.follow(this.loggedUser!.userId, this.user!.username).subscribe(console.log('Uspesno'))
+      this.loggedUser!.following.unshift(this.user)
+      localStorage.setItem('logged_user', JSON.stringify(this.loggedUser));
+      console.log(this.loggedUser)
+    }
+  }
 }
+
