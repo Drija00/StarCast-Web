@@ -463,6 +463,20 @@ export class UserComponent  implements OnInit{
     return false;
   }
 
+  formatPostDate(dateString: string): string {
+    const date = new Date(dateString);
+    const today = new Date();
+  
+    const isToday =
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+  
+    return isToday
+      ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      : date.toLocaleDateString('en-GB');
+  }
+
   changeFollowStatus(){
     if(this.isfollowing()){
       this.dataService.unfollow(this.loggedUser!.userId, this.user!.username).subscribe(console.log('Uspesno'))

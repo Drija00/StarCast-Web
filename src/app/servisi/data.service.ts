@@ -39,6 +39,7 @@ export class DataService{
 
     var url = this.apiUrlStar + '/star/upload';
     let newPost = this.http.post<Star>(url, formData);
+    newPost.subscribe(x=>console.log(x))
     return newPost;
   }
 
@@ -124,6 +125,13 @@ setDescription(userId: string, description:string): Observable<SetDescription> {
       .set('offset',offset)
       .set('limit',limit)
     return this.http.get<Stars>(`${this.apiUrlStar}/user/stars/foryou`, { params });
+    //return of(stars.slice(offset, offset + limit));
+  }
+  deleteStar(userId: string, starId:string): Observable<void> {
+    const params = new HttpParams()
+      .set('userId',userId)
+      .set('starId',starId)
+    return this.http.delete<void>(`${this.apiUrlStar}/star`, { params });
     //return of(stars.slice(offset, offset + limit));
   }
 

@@ -354,28 +354,29 @@ section {
 }
 
 .example-card {
-    margin-left: 2px;
-    margin-right: 2px;
-    min-width: 80%;
-    max-width: 80%;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    min-height:auto;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-  }
+  margin-left: 2px;
+  margin-right: 2px;
+  min-width: 80%;
+  max-width: 80%;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding-top: 15px;
+  min-height:auto;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
 
-  .mat-mdc-card-header{
-    display: flex;
-    padding: 16px 16px 0;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-    align-items: center;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
+.mat-mdc-card-header{
+  display: flex;
+  padding: 0 10px 0 10px;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
 
   #usersearch{
     display: flex;
@@ -391,9 +392,20 @@ section {
     margin-left: 10px;
     color: rgb(126, 126, 126);
     cursor: pointer;
+}
 
-  }
-  
+#deleteButton{
+  height: 25px;
+  width: 25px;
+  padding-top: 2px;
+  margin-left: 5px;
+  font-weight: bolder;
+  color: rgb(126, 126, 126);
+}
+
+#deleteButton:hover{
+  color: rgb(32, 51, 136);
+}
 
   .mat-mdc-card-avatar{
     margin-bottom: 0px;
@@ -415,7 +427,9 @@ section {
     display: flex;
     flex-direction: row;
     align-items: center;
-  }
+    margin-right: 12vw;
+    width: 20vw;
+}
 
   .title{
     padding-left: 10px;
@@ -428,6 +442,13 @@ section {
   #scrollMarker {
     margin-bottom: 10px;
     background-color: red;
+  }
+
+  #usernamePost{
+    margin-left: 5px;
+    color: rgb(126, 126, 126);
+    cursor: pointer;
+    font-size: smaller;
   }
   
   

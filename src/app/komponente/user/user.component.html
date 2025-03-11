@@ -140,7 +140,10 @@
                     </div>
                     <mat-card-title class="title">{{ star?.user?.firstName }} {{ star?.user?.lastName }}</mat-card-title>
                 </div>
-                <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{star.timestamp}}</mat-card-subtitle>
+                <div style="display: flex; align-items: center; gap: 5px; min-width: 100px; justify-content: flex-end;">
+                    <mat-card-subtitle style="font-size: smaller; font-weight: lighter;">{{formatPostDate(star.timestamp)}}</mat-card-subtitle>
+                    <mat-icon id="deleteButton">close</mat-icon>
+                </div>
                 </mat-card-header>
                 <mat-card-content>
                     <p>

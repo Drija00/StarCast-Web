@@ -49,6 +49,7 @@ import { filter } from 'rxjs';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollMarker', { static: false }) scrollMarker!: ElementRef;
+  @ViewChild('scrollMarker1', { static: false }) scrollMarker1!: ElementRef;
   @ViewChild('scroll', { static: true }) scrollDiv!: ElementRef;
   stars:Star[] = [];
   loading = false;
@@ -57,6 +58,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   offset = 0;
   limit = 6;
   offsetFilter=0;
+  limitFilter = 12;
+  searchValue=""
   searchedUsers:any[]=[];
   showTopButton = false;
   loggedUser: User | undefined;
@@ -124,11 +127,33 @@ export class HomeComponent implements OnInit, AfterViewInit {
     )
   }
 
-  backToHome(){
-    console.log("HOME")
+  backToHome() {
+    console.log("HOME");
     this.showFeed = true;
-    this.router.navigate(['/home',this.loggedUser?.userId]);
-  }
+    this.router.navigate(['/home', this.loggedUser?.userId]);
+
+    // Reinitialize lazy loading observer
+    setTimeout(() => {
+        if (this.scrollDiv && this.scrollMarker) {
+            this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
+            this.observeScrollMarker();
+        }
+    }, 10);
+}
+
+observeScrollMarker() {
+    if (!this.observer) {
+        this.observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && this.showFeed) {
+                this.loadStars();
+            }
+        });
+    }
+    if (this.scrollMarker) {
+        this.observer.observe(this.scrollMarker.nativeElement);
+    }
+}
+
 
   redirectToUser(starId:string){
     console.log("user")
@@ -167,7 +192,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
         (entries) => {
           for (const entry of entries) {
             if (entry.isIntersecting && !this.loading) {
-              this.loadStars();
+              if(this.showFeed){
+                this.loadStars();
+              }else{
+                this.getFilteredUser()
+              }
             }
           }
         },
@@ -205,23 +234,47 @@ export class HomeComponent implements OnInit, AfterViewInit {
       },
     });
   }  
+
+  getFilteredUser(){
+    if (this.loading) {
+      console.warn('Učitavanje je već u toku. Preskačem poziv loadStars.');
+      return;
+      }
+  
+      this.loading = true;
+    
+      this.dataService.getFilteredUsers(this.searchValue,this.offsetFilter,this.limitFilter).subscribe({
+        next: (x) => {
+          if (x.items.length > 0) {
+            this.searchedUsers = [...this.searchedUsers,...x.items]
+            this.offsetFilter++
+            console.log(x.items)
+            this.showFeed = false;
+            this.value = '';
+          }else{
+            console.log('Diskonektujem posmatrača.');
+            this.observer?.disconnect();
+          }
+        },error: (err) => console.error('Greška prilikom učitavanja zvezdica:', err),
+        complete: () => {
+          this.loading = false;
+          console.log('Učitavanje završeno.');
+        },
+        
+      })
+  }
   
   search() {
-    const searchValue = this.value.toLowerCase().trim();
-  
-    this.dataService.getFilteredUsers(searchValue,this.offsetFilter,this.limit).subscribe(x=>{
-      this.searchedUsers = x.items
-      console.log(x.items)
-      this.showFeed = false;
-      this.value = '';
-    })
-
+    this.offsetFilter=0
+    this.searchedUsers = []
+    this.scrollToTop()
+    this.searchValue = this.value.toLowerCase().trim();
+    this.getFilteredUser()
     /*this.searchedUsers = users.filter(user =>
       user.username.toLowerCase().includes(searchValue) ||
       user.firstName.toLowerCase().includes(searchValue) ||
       user.lastName.toLowerCase().includes(searchValue)
     );*/
-  
   }
   
 
@@ -315,6 +368,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
       
   }
 
+  
+  isPostFromLoggedUser(star:Star): boolean {
+   return star.user.userId === this.loggedUser?.userId ? true :false;
+  }
+
+
   unlikePost(userId:string,star:Star){
     this.dataService.unlikePost(userId,star.starId).subscribe(x=>{
       star.userLikes = star.userLikes.filter(x=>x.userId!==userId)
@@ -348,7 +407,26 @@ getProfileImage(user: UserFollowing): string {
   return `url('${imageUrl}')`;
 }
 
+formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const today = new Date();
 
+  const isToday =
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear();
+
+  return isToday
+    ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    : date.toLocaleDateString('en-GB');
+}
+
+deleteStar(star:Star){
+  this.stars = [...this.stars.filter(x=>x.starId!==star.starId)]
+  this.dataService.deleteStar(this.loggedUser!.userId,star.starId).subscribe(x=>{
+    console.log("Uspesno obirsna objava")
+  })
+}
 
 
 
