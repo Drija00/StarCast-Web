@@ -97,7 +97,7 @@ export class LoginComponent implements OnInit {
     if(this.register()){
       this.switchForm = true;
       setTimeout(() => {
-        this.cdr.detectChanges(); // Odloži osvežavanje da bi se forma sigurno učitala
+        this.cdr.detectChanges();
       });
     }else{
       window.alert("Invalid credentials!");
@@ -129,7 +129,7 @@ export class LoginComponent implements OnInit {
   redirectToSignup(){this.switchForm = false;
       this.signup.reset();
       setTimeout(() => {
-        this.cdr.detectChanges(); // Odloži osvežavanje da bi se forma sigurno učitala
+        this.cdr.detectChanges(); 
       },100);
     }
 
@@ -237,7 +237,7 @@ export class LoginComponent implements OnInit {
     if(this.register()){
       this.switchForm = true;
       setTimeout(() => {
-        this.cdr.detectChanges(); // Odloži osvežavanje da bi se forma sigurno učitala
+        this.cdr.detectChanges(); 
       });
     }else{
       window.alert("Invalid credentials!");
@@ -269,7 +269,7 @@ export class LoginComponent implements OnInit {
   redirectToSignup(){this.switchForm = false;
       this.signup.reset();
       setTimeout(() => {
-        this.cdr.detectChanges(); // Odloži osvežavanje da bi se forma sigurno učitala
+        this.cdr.detectChanges(); 
       },100);
     }
 

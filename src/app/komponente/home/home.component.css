@@ -161,10 +161,14 @@ mat-grid-list{
   z-index: 1;
 }
 
-
+#upward{
+  padding-top: 1px;
+}
 
 .go-to-top {
   position: fixed;
+  align-items: center;
+  justify-self: center;
   bottom: 20px;
   right: 20px;
   background: rgba(255, 255, 255, 0.5);
@@ -216,7 +220,6 @@ mat-grid-list{
   cursor: pointer;
   height: 30px;
   width: 30px;
-  margin-right: 10px;
 }
 
 .postUserProfile{
@@ -269,6 +272,7 @@ mat-grid-list{
     background: rgba(0, 0, 0, 0.6);
     height: 80px;
     z-index: 16;
+    width: 98%;
     border-bottom: 1px solid rgb(28, 29, 32);
 }
 
@@ -368,6 +372,37 @@ section {
   justify-content: space-evenly;
 }
 
+.notification-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+}
+
+.notification-menu {
+  max-height: 200px;
+  width: auto; /* Omogućava skrolovanje */
+  overflow-x: hidden;
+}
+
+.scroll-container {
+  max-height: 200px; /* Postavi visinu koja stane 3 poruke */
+  overflow-y: auto;   /* Omogućava skrolovanje */
+  overflow-x: hidden; /* Skriva horizontalno skrolovanje */
+  scroll-behavior: smooth;
+  
+  display: flex;
+  width: auto;
+  flex-direction: column;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1);
+  align-items: center;
+  z-index: 10;
+}
+
+
 .mat-mdc-card-header{
   display: flex;
   padding: 0 10px 0 10px;
@@ -442,6 +477,11 @@ section {
   #scrollMarker {
     margin-bottom: 10px;
     background-color: red;
+  }
+  #scrollMarkerMsg {
+    margin-bottom: 10px;
+    height: 5px;
+    color: red;
   }
 
   #usernamePost{

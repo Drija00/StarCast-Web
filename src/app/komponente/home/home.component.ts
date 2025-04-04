@@ -21,12 +21,15 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { User, UserFollowing, users } from '../../users';
 import { DataService } from '../../servisi/data.service';
 import { Star } from '../../posts';
-import { filter } from 'rxjs';
+import { filter, Observable } from 'rxjs';
+import { Notification, NotificationService } from '../../servisi/notification.service';
+import {MatBadgeModule} from '@angular/material/badge';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +45,9 @@ import { filter } from 'rxjs';
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatGridListModule
+    MatGridListModule,
+    MatBadgeModule,
+    MatMenuModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -51,6 +56,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollMarker', { static: false }) scrollMarker!: ElementRef;
   @ViewChild('scrollMarker1', { static: false }) scrollMarker1!: ElementRef;
   @ViewChild('scroll', { static: true }) scrollDiv!: ElementRef;
+  @ViewChild('scrollMarkerMsg', { static: false }) scrollMarkerMsg!: ElementRef;
+  @ViewChild('scrollMsg', { static: true }) scrollMsgDiv!: ElementRef;
+  @ViewChild('menuTrigger') menuTrigger!: MatMenuTrigger;
   stars:Star[] = [];
   loading = false;
   showFeed = true;
@@ -59,6 +67,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   limit = 6;
   offsetFilter=0;
   limitFilter = 12;
+  pageSize = 50; 
+  page = 0;
+  loadingMsg = false;
   searchValue=""
   searchedUsers:any[]=[];
   showTopButton = false;
@@ -76,7 +87,45 @@ export class HomeComponent implements OnInit, AfterViewInit {
   profileImage:string = "";
 
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService) {}
+  brojNotifikacija$?: Observable<number>;
+
+  notifikacijePrikaz?:string[] 
+
+  sortiraneNotifikacije?: Notification[]
+
+  stranaNotifikacije = 0;
+
+
+  /*onScroll1(event: any){
+    const container = event.target;
+    const scrollThreshold = container.scrollHeight * 0.9;
+    if (container.scrollTop + container.clientHeight >= scrollThreshold) {   
+      this.notificationService.loadMoreItems();
+    }
+  }*/
+
+  onScrollMsg(event: any){
+    const container = event.target;
+    const scrollThreshold = container.scrollHeight * 0.9;
+    if (container.scrollTop + container.clientHeight >= scrollThreshold) {   
+      console.log("Ucitaj   Jos   Notifikacija")
+    }
+  }
+
+  changeNotificationStatuses(){
+    let x = this.notificationService.getUnseenNotifications()
+    console.log(x)
+    if(x.length > 0){
+      let userId = this.loggedUser!.userId
+      this.dataService.changeNotificationStatuses(userId,x).subscribe(x=>{
+        console.log(x)
+        this.notificationService.markAllNotificationsAsSeen()
+      })
+    }
+    
+  }
+
+  constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService, public notificationService: NotificationService) {}
   expandImages(images: string[], index: number): void {
     this.expandedImages = images;
     this.currentImageIndex = index;
@@ -132,20 +181,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.showFeed = true;
     this.router.navigate(['/home', this.loggedUser?.userId]);
 
-    // Reinitialize lazy loading observer
     setTimeout(() => {
         if (this.scrollDiv && this.scrollMarker) {
             this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
             this.observeScrollMarker();
         }
-    }, 10);
+    }, 20);
 }
 
 observeScrollMarker() {
     if (!this.observer) {
         this.observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting && this.showFeed) {
-                this.loadStars();
+                this.loadStars(this.loggedUser!.userId);
             }
         });
     }
@@ -161,8 +209,9 @@ observeScrollMarker() {
   }
 
   ngOnInit(): void {
-    
+    this.loading = false;
     this.showFeed = true
+    console.log(this.loggedUser)
     setTimeout(() => {
       
       const userJson = localStorage.getItem('logged_user');
@@ -170,8 +219,11 @@ observeScrollMarker() {
         this.loggedUser = JSON.parse(userJson);
         if(this.loggedUser?.profileImage) this.profileImage = this.loggedUser.profileImage
         console.log(this.loggedUser);
+        this.loadNotifications()
+        this.notificationService.connect(this.loggedUser!)
       }
-      this.loadStars();
+
+      this.loadStars(this.loggedUser!.userId);
       console.log(this.scrollDiv)
       if (this.scrollDiv) {
         this.scrollDiv.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
@@ -187,13 +239,13 @@ observeScrollMarker() {
         console.error('Scroll marker element nije pronađen!');
         return;
       }
-    
+      console.log(this.loggedUser)
       this.observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             if (entry.isIntersecting && !this.loading) {
               if(this.showFeed){
-                this.loadStars();
+                this.loadStars(this.loggedUser!.userId);
               }else{
                 this.getFilteredUser()
               }
@@ -204,16 +256,26 @@ observeScrollMarker() {
       );
     
       this.observer.observe(this.scrollMarker.nativeElement);
+
+      this.menuTrigger.menuClosed.subscribe(() => {
+        if (this.notificationService.notifications.length > 0) {
+          this.changeNotificationStatuses();
+        }
+      });
     }
   
-  loadStars() {
+  loadStars(userId:string) {
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA   "+this.loading)
+    //this.notifications = this.notificationService.getNotifications()
+    //console.log(this.notifications)
+    console.log(userId)
     if (this.loading) {
       console.warn('Učitavanje je već u toku. Preskačem poziv loadStars.');
       return;
     }
   
     this.loading = true;
-    this.dataService.getStars(this.loggedUser!.userId,this.offset, this.limit).subscribe({
+    this.dataService.getStars(userId,this.offset, this.limit).subscribe({
       next: (data) => {
         console.log(data)
         if (data.items.length > 0) {
@@ -227,7 +289,10 @@ observeScrollMarker() {
           this.observer?.disconnect();
         }
       },
-      error: (err) => console.error('Greška prilikom učitavanja zvezdica:', err),
+      error: (err) => {
+        console.error('Greška prilikom učitavanja zvezdica:', err)
+        this.loading = false;
+      },
       complete: () => {
         this.loading = false;
         console.log('Učitavanje završeno.');
@@ -255,7 +320,10 @@ observeScrollMarker() {
             console.log('Diskonektujem posmatrača.');
             this.observer?.disconnect();
           }
-        },error: (err) => console.error('Greška prilikom učitavanja zvezdica:', err),
+        },error: (err) => {
+          console.error('Greška prilikom učitavanja zvezdica:', err)
+          this.loading = false
+        },
         complete: () => {
           this.loading = false;
           console.log('Učitavanje završeno.');
@@ -296,7 +364,7 @@ observeScrollMarker() {
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput?.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const files = Array.from(fileInput.files);
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
   
@@ -304,15 +372,13 @@ observeScrollMarker() {
         alert('Invalid file type(s). Please select only JPEG or PNG images.');
         return;
       }
-  
-      // Reset previews
       this.previewImages = [];
-      this.imageFiles = files;  // If you want to show previews for multiple images
+      this.imageFiles = files;
   
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => {
-          this.previewImages.push(reader.result as string);  // Add each preview image URL
+          this.previewImages.push(reader.result as string); 
         };
         reader.readAsDataURL(file);
       });
@@ -428,7 +494,32 @@ deleteStar(star:Star){
   })
 }
 
+onMenuClose() {
+  if (this.notificationService.notifications.length > 0) {
+    this.changeNotificationStatuses();
+  }
+}
 
+loadNotifications() {
+  console.log("MENI OTVOREN")
+  if (this.loadingMsg) return;
+  this.loadingMsg = true;
+
+  this.dataService.getNotifications(this.loggedUser!.userId, this.page, this.pageSize).subscribe(
+    (data) => {
+      if (data.items.length > 0) {
+        this.notificationService.notifications=[...data.items];
+        this.page++;
+        console.log(data)
+      }
+      this.loadingMsg = false;
+    },
+    (error) => {
+      console.error('Greška pri učitavanju notifikacija', error);
+      this.loadingMsg = false;
+    }
+  );
+}
 
   /*postStar(textarea: HTMLTextAreaElement){
     const newStar = {
@@ -447,3 +538,5 @@ deleteStar(star:Star){
     console.log(this.stars)
   }*/
 }
+
+

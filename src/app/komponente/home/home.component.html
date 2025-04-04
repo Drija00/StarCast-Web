@@ -16,6 +16,36 @@
           </mat-form-field>
           
         <span class="example-spacer"></span>
+
+        <button mat-icon-button [matMenuTriggerFor]="notifMenu" #menuTrigger="matMenuTrigger">
+            <mat-icon [matBadge]="notificationService.getUnseenNotifications().length" matBadgeColor="accent" 
+                      [matBadgeHidden]="notificationService.getUnseenNotifications().length === 0">
+              mail
+            </mat-icon>
+          </button>
+          
+          <mat-menu #notifMenu="matMenu" class="notification-menu" >
+            <ng-container *ngIf="notificationService.notifications.length === 0">
+              <button mat-menu-item disabled>Nema novih poruka</button>
+            </ng-container>
+          
+            <div class="scroll-container" #scrollMsg (scroll)="onScrollMsg($event)">
+              <ng-container *ngFor="let poruka of notificationService.notifications">
+                <button mat-menu-item>
+                  <div class="notification-content">
+                    <mat-icon style="color: powderblue;">
+                      {{ poruka.seen ? 'check' : 'priority_high' }}
+                    </mat-icon>
+                    <p style="margin-right: 10px;">{{ poruka.message }}</p>
+                  </div>
+                </button>
+              </ng-container>
+              
+              <div #scrollMarkerMsg id="scrollMarkerMsg"></div>
+            </div>
+          </mat-menu>
+          
+
         <div mat-card-avatar
             [style.background-image]="profileImageStyle"
             class="navprofile"
@@ -31,7 +61,7 @@
     <div id="pozadina"></div>
 
     <button mat-icon-button class="go-to-top" *ngIf="showTopButton" (click)="scrollToTop()">
-        <mat-icon>arrow_upward</mat-icon>
+        <mat-icon id="upward">arrow_upward</mat-icon>
     </button>
 
     <div id="feed">

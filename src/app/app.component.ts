@@ -5,10 +5,11 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatDividerModule} from '@angular/material/divider';
 import { RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatToolbarModule, MatButtonModule, MatIconModule, MatDividerModule ],
+  imports: [RouterOutlet, MatToolbarModule, MatButtonModule, MatIconModule, MatDividerModule, CommonModule ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

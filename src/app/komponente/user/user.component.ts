@@ -55,7 +55,7 @@ export class UserComponent  implements OnInit{
   @ViewChild('scrollMarker', { static: false }) scrollMarker!: ElementRef;
   @ViewChild('scroll', { static: true }) scrollDiv!: ElementRef;
   stars:Star[] = [];
-  loading = false;
+  loadingUser = false;
   offset = 0;
   limit = 6;
   showTopButton = false;
@@ -136,7 +136,7 @@ export class UserComponent  implements OnInit{
       this.observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting && !this.loading) {
+            if (entry.isIntersecting && !this.loadingUser) {
               this.loadStars(this.user.userId);
             }
           }
@@ -148,18 +148,18 @@ export class UserComponent  implements OnInit{
     }
     getSanitizedUrl(image: string): string {
       const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(image);
-      console.log(sanitizedUrl);  // Proveri vrednost URL-a
+      console.log(sanitizedUrl); 
       return sanitizedUrl as string;
     }
     
 
     loadStars(userId:string) {
-      if (this.loading) {
+      if (this.loadingUser) {
         console.warn('Učitavanje je već u toku. Preskačem poziv loadStars.');
         return;
       }
     
-      this.loading = true;
+      this.loadingUser = true;
       this.dataService.getUserStars(userId,this.offset, this.limit).subscribe({
         next: (data) => {
           console.log(data)
@@ -176,7 +176,7 @@ export class UserComponent  implements OnInit{
         },
         error: (err) => console.error('Greška prilikom učitavanja zvezdica:', err),
         complete: () => {
-          this.loading = false;
+          this.loadingUser = false;
           console.log('Učitavanje završeno.');
         },
       });
@@ -195,14 +195,14 @@ export class UserComponent  implements OnInit{
     }
   
     prevImage(event: Event): void {
-      event.stopPropagation(); // Spreči zatvaranje modala
+      event.stopPropagation(); 
       if (this.currentImageIndex > 0) {
         this.currentImageIndex--;
       }
     }
   
     nextImage(event: Event): void {
-      event.stopPropagation(); // Spreči zatvaranje modala
+      event.stopPropagation(); 
       if (this.currentImageIndex < this.expandedImages.length - 1) {
         this.currentImageIndex++;
       }
@@ -234,7 +234,7 @@ export class UserComponent  implements OnInit{
   onBackgroundButtonSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput?.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const files = Array.from(fileInput.files); 
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
   
@@ -244,7 +244,7 @@ export class UserComponent  implements OnInit{
       }
       files.forEach(file => {
         const reader = new FileReader();
-        reader.onload = () => { // Store the base64 image data
+        reader.onload = () => { 
           this.dataService.setBackgroundImage(this.loggedUser!.userId,file).subscribe(x=>{
             console.log('USPESNA PROMENA')
             console.log(x)
@@ -264,7 +264,7 @@ export class UserComponent  implements OnInit{
   onProfileButtonSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput?.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const files = Array.from(fileInput.files); 
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
   
@@ -274,7 +274,7 @@ export class UserComponent  implements OnInit{
       }
       files.forEach(file => {
         const reader = new FileReader();
-        reader.onload = () => { // Store the base64 image data
+        reader.onload = () => { 
           this.dataService.setProfileImage(this.loggedUser!.userId,file).subscribe(x=>{
             console.log('USPESNA PROMENA')
             this.user.profileImage = x.profileImage
@@ -311,7 +311,7 @@ export class UserComponent  implements OnInit{
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput?.files && fileInput.files.length > 0) {
-      const files = Array.from(fileInput.files);  // Convert FileList to an array
+      const files = Array.from(fileInput.files); 
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
       const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
   
@@ -320,14 +320,13 @@ export class UserComponent  implements OnInit{
         return;
       }
   
-      // Reset previews
       this.previewImages = [];
-      this.imageFiles = files;  // If you want to show previews for multiple images
+      this.imageFiles = files; 
       
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = () => {
-          this.previewImages.push(reader.result as string);  // Add each preview image URL
+          this.previewImages.push(reader.result as string); 
         };
         reader.readAsDataURL(file);
       });
@@ -414,25 +413,25 @@ export class UserComponent  implements OnInit{
     }
 
   getProfileImage(user: UserFollowing): string {
-    //console.log("User in getProfileImage:", user); // Provera ulaznog objekta
+    //console.log("User in getProfileImage:", user); 
   
     const imageUrl = user?.profileImage
         ? `${this.userBasePath}${user?.profileImage}`
         : 'Images/profile.jpg';
   
-    //console.log('Final Image URL:', imageUrl); // Provera rezultujuće putanje
+    //console.log('Final Image URL:', imageUrl);
   
     return `url('${imageUrl}')`;
   }
 
   getBackgroundImage(user: UserFollowing): string {
-    //console.log("User in getProfileImage:", user); // Provera ulaznog objekta
+    //console.log("User in getProfileImage:", user);
   
     const imageUrl = user?.profileImage
         ? `${this.userBasePath}${user?.profileImage}`
         : 'Images/profile.jpg';
   
-    //console.log('Final Image URL:', imageUrl); // Provera rezultujuće putanje
+    //console.log('Final Image URL:', imageUrl); 
   
     return `url('${imageUrl}')`;
   }
@@ -475,6 +474,13 @@ export class UserComponent  implements OnInit{
     return isToday
       ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
       : date.toLocaleDateString('en-GB');
+  }
+  
+  deleteStar(star:Star){
+    this.stars = [...this.stars.filter(x=>x.starId!==star.starId)]
+    this.dataService.deleteStar(this.loggedUser!.userId,star.starId).subscribe(x=>{
+      console.log("Uspesno obirsna objava")
+    })
   }
 
   changeFollowStatus(){

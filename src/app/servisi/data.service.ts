@@ -5,6 +5,7 @@ import { Star,Stars } from '../posts';
 import { environment } from '../../environments/environment';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Notification, Notifications } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class DataService{
   private apiUrlUser = environment.apiHostUser;
   private apiUrlLike = environment.apiHostLike;
   private apiUrlStar = environment.apiHostStar;
+  private apiUrlNotification = environment.apiHostNotification
 
 
   login(username: string, password: string): Observable<User> {
@@ -39,7 +41,7 @@ export class DataService{
 
     var url = this.apiUrlStar + '/star/upload';
     let newPost = this.http.post<Star>(url, formData);
-    newPost.subscribe(x=>console.log(x))
+    //newPost.subscribe(x=>console.log(x))
     return newPost;
   }
 
@@ -111,6 +113,13 @@ setDescription(userId: string, description:string): Observable<SetDescription> {
     return this.http.put<void>(`${this.apiUrlUser}/user/follow`, null, { params });
   }
 
+  changeNotificationStatuses(userId: string, notifications: Notification[]) {
+    console.log(notifications)
+    const ids: string[] = notifications.map(n => n.notificationId);const params = new HttpParams()
+    .set('userId', userId)
+    return this.http.put<void>(`${this.apiUrlNotification}/notifications/status`, ids, {params});
+  }
+
   unfollow(userId:string, followeUsername:string): any{console.log("apiUrlUser")
     console.log(userId)
     const params = new HttpParams()
@@ -127,6 +136,15 @@ setDescription(userId: string, description:string): Observable<SetDescription> {
     return this.http.get<Stars>(`${this.apiUrlStar}/user/stars/foryou`, { params });
     //return of(stars.slice(offset, offset + limit));
   }
+  getNotifications(id: string,offset: number, limit: number): Observable<Notifications> {
+    const params = new HttpParams()
+      .set('userId',id)
+      .set('offset',offset)
+      .set('limit',limit)
+    return this.http.get<Notifications>(`${this.apiUrlNotification}/notifications`, { params });
+    //return of(stars.slice(offset, offset + limit));
+  }
+
   deleteStar(userId: string, starId:string): Observable<void> {
     const params = new HttpParams()
       .set('userId',userId)

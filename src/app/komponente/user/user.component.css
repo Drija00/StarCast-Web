@@ -258,10 +258,14 @@ p{
     background: rgba(0, 0, 0, 0.6);
     height: 80px;
     z-index: 16;
+    width: 98%;
     border-bottom: 1px solid rgb(28, 29, 32);
 }
 
 
+#upward{
+  padding-top: 1px;
+}
 .example-spacer {
     flex: 1 1 auto; 
   }
