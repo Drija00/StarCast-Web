@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { SetBackgroundImage, SetDescription, SetProfileResponse, User, Users, users } from '../users';
+import { SetBackgroundImage, SetDescription, SetProfileResponse, User, UserRegister, Users, users } from '../users';
 import { Star,Stars } from '../posts';
 import { environment } from '../../environments/environment';
 
@@ -26,6 +26,10 @@ export class DataService{
       .set('password', password);
     //return this.http.put<User>('http://localhost:8082/user/login', null, { params });
     return this.http.put<User>(`${this.apiUrlUser}/user/login`, null, { params });
+  }
+
+  register(user: UserRegister): Observable<void>{
+    return this.http.post<void>(`${this.apiUrlUser}/user`, user);
   }
 
   uploadStar(postData: any, files: File[]):Observable<Star> {

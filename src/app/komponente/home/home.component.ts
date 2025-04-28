@@ -20,6 +20,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+  inject
 } from '@angular/core';
 import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
@@ -30,6 +31,7 @@ import { Star } from '../../posts';
 import { filter, Observable } from 'rxjs';
 import { Notification, NotificationService } from '../../servisi/notification.service';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-home',
@@ -47,7 +49,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatInputModule,
     MatGridListModule,
     MatBadgeModule,
-    MatMenuModule
+    MatMenuModule,
+    MatFormFieldModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -85,6 +88,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   starBasePath = environment.apiHostStar;
   userBasePath = environment.apiHostUser;
   profileImage:string = "";
+  private _snackBar = inject(MatSnackBar);
 
 
   brojNotifikacija$?: Observable<number>;
@@ -123,6 +127,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       })
     }
     
+  }
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
   }
 
   constructor(private router: Router, private cdr: ChangeDetectorRef, private dataService: DataService, public notificationService: NotificationService) {}
@@ -233,6 +241,14 @@ observeScrollMarker() {
     
     this.cdr.detectChanges()
     }, 10);
+
+    this.notificationService.newNotification$.subscribe((notification: Notification) => {
+      this._snackBar.open(notification.message, 'Zatvori', {
+        duration: 5000,
+        verticalPosition: 'bottom',
+        panelClass: ['notification-snackbar']
+      });
+    });
   }
     ngAfterViewInit(): void {
       if (!this.scrollMarker) {
@@ -409,7 +425,7 @@ observeScrollMarker() {
         user: this.loggedUser!,
         timestamp: new Date().toISOString(),
       };*/
-        console.log(response)
+        console.log(response.starId)
         this.stars.unshift(response);
         this.cdr.detectChanges();
       },

@@ -20,6 +20,16 @@ export interface UserFollowing{
     lastName:string;
     profileImage:string;
 }
+
+export interface UserRegister{
+    username:string;
+    email:string;
+    password:string;
+    firstName:string;
+    lastName:string;
+    active: boolean
+}
+
 export interface SetProfileResponse{
     profileImage:string;
 }

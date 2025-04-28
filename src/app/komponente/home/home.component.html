@@ -158,8 +158,8 @@
                         @if(didILikeThePost(star.userLikes)) {
                             <button mat-button (click)="unlikePost(loggedUser!.userId, star)">
                                 <span style="display: flex; align-items: center; color: rgb(131, 185, 255);">
-                                    <mat-icon style="color: rgb(13, 0, 255);">thumb_up</mat-icon>
-                                    <p style="margin-left: 10px; margin-right: 5px; margin-bottom: 0;">{{ star.userLikes.length || 0 }}</p>
+                                    <mat-icon style="color: #ffabf3;">thumb_up</mat-icon>
+                                    <p style="margin-left: 10px; margin-right: 5px; margin-bottom: 0; color: #ffabf3;">{{ star.userLikes.length || 0 }}</p>
                                 </span>
                             </button>
                         } @else {
@@ -207,5 +207,5 @@
         </div>
     </div>
       
-      
+
 </body>

@@ -3,7 +3,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { User } from '../users';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface Notifications{
   items: Notification[]
@@ -35,6 +35,8 @@ export class NotificationService {
 
     //unreadNotificationsCount=0;
     notifications: Array<Notification> = [];
+    
+    public newNotification$: Subject<Notification> = new Subject<Notification>();
 
   connect(user: User) {
     console.log('Connecting to WS...');
@@ -52,6 +54,7 @@ export class NotificationService {
                 console.log('Received user notification:', notification);
                 
                 this.notifications.unshift(notification)
+                this.newNotification$.next(notification);
                 //this.brojNovihNotifikacija()
             }
         );
@@ -72,6 +75,7 @@ export class NotificationService {
                 const notification : Notification = JSON.parse(message.body)
                 console.log('Received like notification:', notification);
                 this.notifications.unshift(notification)
+                this.newNotification$.next(notification);
                 //this.brojNovihNotifikacija()
             }
         );

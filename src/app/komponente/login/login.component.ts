@@ -8,7 +8,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {User, users} from '../../users';
+import {User, UserRegister, users} from '../../users';
 import { DataService } from '../../servisi/data.service';
 
 
@@ -64,37 +64,57 @@ export class LoginComponent implements OnInit {
   get passwordInput3() { return this.password3 }  
   get password2Input() { return this.signup.get('password2'); }  
 
-  register(): boolean {
-
+  async register(): Promise<boolean> {
     const formValues = this.signup.value;
-    let idCounter=0;
+
     for (const u of users) {
-      idCounter++;
-      if (u.email === formValues.email || u.username === formValues.username || formValues.password!==formValues.password2) {
+      if (u.email === formValues.email || u.username === formValues.username || formValues.password !== formValues.password2) {
         return false;
       }
     }
-    users.push({
-      userId: "",
+
+    let userRegister: UserRegister = {
       username: formValues.username,
-      firstName: formValues.firstName,
-      lastName: formValues.lastName,
-      description: "",
-      joinDate: new Date(),
       email: formValues.email,
       password: formValues.password,
-      active: true,
-      profileImage: "",
-      backgroundImage: "",
-      following:[],
-      followers:[]
-    })
-    return true;
-  }
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      active: true
+    };
+
+    console.log(formValues);
+
+    try {
+      await this.dataService.register(userRegister).toPromise();
+
+      users.push({
+        userId: "",
+        username: formValues.username,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        description: "",
+        joinDate: new Date(),
+        email: formValues.email,
+        password: formValues.password,
+        active: true,
+        profileImage: "",
+        backgroundImage: "",
+        following: [],
+        followers: []
+      });
+      window.alert("Successful registration!");
+      return true;
+    } catch (err) {
+      window.alert('Registration failed!');
+      console.error('Registration failed:', err);
+      return false;
+    }
+}
+
   
 
-  redirectToLogin = () => {
-    if(this.register()){
+  redirectToLogin = async () => {
+    if(await this.register()){
       this.switchForm = true;
       setTimeout(() => {
         this.cdr.detectChanges();
